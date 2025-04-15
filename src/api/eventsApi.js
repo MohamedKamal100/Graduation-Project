@@ -1,187 +1,11 @@
-// import axios from "axios"
-
-// // إنشاء نسخة من axios مع الإعدادات الأساسية
-// const api = axios.create({
-//   baseURL: "http://127.0.0.1:8000/api",
-// })
-
-// // إضافة interceptor لإرفاق التوكن مع كل طلب
-// api.interceptors.request.use((config) => {
-//   const token = localStorage.getItem("token")
-//   if (token) {
-//     config.headers.Authorization = `Bearer ${token}`
-//   }
-//   return config
-// })
-
-// // دوال للتعامل مع API
-// export const fetchEvents = async () => {
-//   const response = await api.get("/events")
-//   return response.data
-// }
-
-// export const fetchBookmarks = async () => {
-//   const response = await api.get("/bookmarks")
-//   return response.data
-// }
-
-// export const fetchTickets = async () => {
-//   const response = await api.get("/mytickets") // Updated endpoint
-//   return response.data
-// }
-
-// export const addBookmark = async (eventId) => {
-//   const response = await api.post("/bookmarks", { event_id: eventId })
-//   return response.data
-// }
-
-// export const removeBookmark = async (eventId) => {
-//   const response = await api.delete(`/bookmarks/${eventId}`)
-//   return response.data
-// }
-
-// export const bookTicket = async (eventId, quantity = 1) => {
-//   const response = await api.post("/tickets", {
-//     event_id: eventId,
-//     quantity,
-//   })
-//   return response.data
-// }
-
-// export default api
-
-
-
-// import axios from "axios"
-
-// // إنشاء نسخة من axios مع الإعدادات الأساسية
-// const api = axios.create({
-//   baseURL: "http://127.0.0.1:8000/api",
-// })
-
-// // إضافة interceptor لإرفاق التوكن مع كل طلب
-// api.interceptors.request.use((config) => {
-//   const token = localStorage.getItem("token")
-//   if (token) {
-//     config.headers.Authorization = `Bearer ${token}`
-//   }
-//   return config
-// })
-
-// // دوال للتعامل مع API
-// export const fetchEvents = async () => {
-//   const response = await api.get("/events")
-//   return response.data
-// }
-
-// export const fetchBookmarks = async () => {
-//   const response = await api.get("/bookmarks")
-//   return response.data
-// }
-
-// export const fetchTickets = async () => {
-//   const response = await api.get("/mytickets") // Correct endpoint
-//   return response.data
-// }
-
-// export const addBookmark = async (eventId) => {
-//   const response = await api.post("/bookmarks", { event_id: eventId })
-//   return response.data
-// }
-
-// export const removeBookmark = async (eventId) => {
-//   const response = await api.delete(`/bookmarks/${eventId}`)
-//   return response.data
-// }
-
-// export const bookTicket = async (eventId, quantity = 1) => {
-//   const response = await api.post("/tickets", {
-//     // Correct endpoint
-//     event_id: eventId,
-//     quantity,
-//   })
-//   return response.data
-// }
-
-// export default api
-
-
-// *---------------------------------------------------------
-// import axios from "axios"
-
-// // إنشاء نسخة من axios مع الإعدادات الأساسية
-// const api = axios.create({
-//   baseURL: "http://127.0.0.1:8000/api",
-// })
-
-// // إضافة interceptor لإرفاق التوكن مع كل طلب
-// api.interceptors.request.use((config) => {
-//   const token = localStorage.getItem("token")
-//   if (token) {
-//     config.headers.Authorization = `Bearer ${token}`
-//   }
-//   return config
-// })
-
-// // دوال للتعامل مع API
-// export const fetchEvents = async () => {
-//   const response = await api.get("/events")
-//   return response.data
-// }
-
-// // Add a specific function to fetch a single event by ID
-
-// // Add this function after the fetchEvents function:
-// export const fetchEventById = async (eventId) => {
-//   try {
-//     const response = await api.get(`/events/${eventId}`)
-//     return response.data
-//   } catch (error) {
-//     console.error(`Error fetching event ${eventId}:`, error)
-//     throw error
-//   }
-// }
-
-// export const fetchBookmarks = async () => {
-//   const response = await api.get("/bookmarks")
-//   return response.data
-// }
-
-// export const fetchTickets = async () => {
-//   const response = await api.get("/mytickets") // Correct endpoint
-//   return response.data
-// }
-
-// export const addBookmark = async (eventId) => {
-//   const response = await api.post("/bookmarks", { event_id: eventId })
-//   return response.data
-// }
-
-// export const removeBookmark = async (eventId) => {
-//   const response = await api.delete(`/bookmarks/${eventId}`)
-//   return response.data
-// }
-
-// export const bookTicket = async (eventId, quantity = 1) => {
-//   const response = await api.post("/tickets", {
-//     // Correct endpoint
-//     event_id: eventId,
-//     quantity,
-//   })
-//   return response.data
-// }
-
-// export default api
-
-
 import axios from "axios"
 
-// إنشاء نسخة من axios مع الإعدادات الأساسية
+// Create axios instance with base settings
 const api = axios.create({
   baseURL: "http://127.0.0.1:8000/api",
 })
 
-// إضافة interceptor لإرفاق التوكن مع كل طلب
+// Add interceptor to attach token with every request
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem("token")
   if (token) {
@@ -190,10 +14,12 @@ api.interceptors.request.use((config) => {
   return config
 })
 
-// دوال للتعامل مع API
+// API functions
 export const fetchEvents = async () => {
+  console.log("Fetching all events...")
   try {
     const response = await api.get("/events")
+    console.log("Events fetched successfully:", response.data.length, "events")
     return response.data
   } catch (error) {
     console.error("Error fetching events:", error)
@@ -202,8 +28,10 @@ export const fetchEvents = async () => {
 }
 
 export const fetchEventById = async (eventId) => {
+  console.log(`Fetching event with ID: ${eventId}...`)
   try {
     const response = await api.get(`/events/${eventId}`)
+    console.log(`Event ${eventId} fetched successfully:`, response.data)
     return response.data
   } catch (error) {
     console.error(`Error fetching event ${eventId}:`, error)
@@ -211,11 +39,12 @@ export const fetchEventById = async (eventId) => {
   }
 }
 
-// دالة لجلب المفضلة للمستخدم الحالي
+// Bookmark functions
 export const fetchBookmarks = async () => {
+  console.log("Fetching user bookmarks...")
   try {
     const response = await api.get("/mybookmarks")
-    console.log("Fetched bookmarks:", response.data)
+    console.log("Bookmarks fetched successfully:", response.data.length, "bookmarks")
     return response.data
   } catch (error) {
     console.error("Error fetching bookmarks:", error)
@@ -223,62 +52,67 @@ export const fetchBookmarks = async () => {
   }
 }
 
-// دالة لإضافة حدث إلى المفضلة
 export const addBookmark = async (eventId) => {
+  console.log(`Adding event ${eventId} to bookmarks...`)
   try {
     const userId = localStorage.getItem("userId") || 1
     const response = await api.post("/bookmarks", {
       user_id: userId,
       event_id: eventId,
     })
-    console.log("Added bookmark:", response.data)
+    console.log(`Event ${eventId} added to bookmarks successfully:`, response.data)
     return response.data
   } catch (error) {
-    console.error("Error adding bookmark:", error)
+    console.error(`Error adding event ${eventId} to bookmarks:`, error)
     throw error
   }
 }
 
-// دالة لحذف حدث من المفضلة
 export const removeBookmark = async (bookmarkId) => {
+  console.log(`Removing bookmark with ID: ${bookmarkId}...`)
   try {
     const response = await api.delete(`/bookmarks/${bookmarkId}`)
-    console.log("Removed bookmark:", bookmarkId)
+    console.log(`Bookmark ${bookmarkId} removed successfully`)
     return response.data
   } catch (error) {
-    console.error("Error removing bookmark:", error)
+    console.error(`Error removing bookmark ${bookmarkId}:`, error)
     throw error
   }
 }
 
-// دالة للتحقق مما إذا كان الحدث في المفضلة
+// Helper functions
 export const checkIsBookmarked = async (eventId) => {
+  console.log(`Checking if event ${eventId} is bookmarked...`)
   try {
     const bookmarks = await fetchBookmarks()
-    return bookmarks.some((bookmark) => bookmark.event_id === eventId)
+    const isBookmarked = bookmarks.some((bookmark) => bookmark.event_id === eventId)
+    console.log(`Event ${eventId} is${isBookmarked ? "" : " not"} bookmarked`)
+    return isBookmarked
   } catch (error) {
-    console.error("Error checking bookmark status:", error)
+    console.error(`Error checking bookmark status for event ${eventId}:`, error)
     return false
   }
 }
 
-// دالة للحصول على معرف المفضلة من معرف الحدث
 export const getBookmarkIdByEventId = async (eventId) => {
+  console.log(`Getting bookmark ID for event ${eventId}...`)
   try {
     const bookmarks = await fetchBookmarks()
     const bookmark = bookmarks.find((bookmark) => bookmark.event_id === eventId)
+    console.log(`Bookmark ID for event ${eventId}:`, bookmark ? bookmark.id : "Not found")
     return bookmark ? bookmark.id : null
   } catch (error) {
-    console.error("Error getting bookmark ID:", error)
+    console.error(`Error getting bookmark ID for event ${eventId}:`, error)
     return null
   }
 }
 
-// دالة لجلب تذاكر المستخدم الحالي
+// Ticket functions
 export const fetchTickets = async () => {
+  console.log("Fetching user tickets...")
   try {
     const response = await api.get("/mytickets")
-    console.log("Fetched tickets:", response.data)
+    console.log("Tickets fetched successfully:", response.data.length, "tickets")
     return response.data
   } catch (error) {
     console.error("Error fetching tickets:", error)
@@ -286,13 +120,13 @@ export const fetchTickets = async () => {
   }
 }
 
-// دالة لحجز تذكرة
 export const bookTicket = async (eventId, quantity = 1) => {
+  console.log(`Booking ${quantity} ticket(s) for event ${eventId}...`)
   try {
     const userId = localStorage.getItem("userId") || 1
 
-    // محاولة الحصول على سعر الحدث
-    let price = 100 // سعر افتراضي
+    // Try to get event price
+    let price = 100 // Default price
     try {
       const event = await fetchEventById(eventId)
       if (event && event.price) {
@@ -324,7 +158,6 @@ export const bookTicket = async (eventId, quantity = 1) => {
     return response.data
   } catch (error) {
     console.error("Error booking ticket:", error)
-    // محاولة الحصول على رسالة الخطأ من الاستجابة
     if (error.response) {
       console.error("Response error data:", error.response.data)
       console.error("Response status:", error.response.status)
@@ -333,29 +166,28 @@ export const bookTicket = async (eventId, quantity = 1) => {
   }
 }
 
-// دالة لإلغاء تذكرة
 export const removeTicket = async (ticketId) => {
+  console.log(`Removing ticket with ID: ${ticketId}...`)
   try {
     const response = await api.delete(`/tickets/${ticketId}`)
-    console.log("Ticket removed successfully:", ticketId)
+    console.log(`Ticket ${ticketId} removed successfully`)
     return response.data
   } catch (error) {
-    console.error("Error removing ticket:", error)
+    console.error(`Error removing ticket ${ticketId}:`, error)
     throw error
   }
 }
 
-// دالة لتحديث تذكرة
 export const updateTicket = async (ticketId, ticketData) => {
+  console.log(`Updating ticket with ID: ${ticketId}...`, ticketData)
   try {
     const response = await api.put(`/tickets/${ticketId}`, ticketData)
-    console.log("Ticket updated successfully:", response.data)
+    console.log(`Ticket ${ticketId} updated successfully:`, response.data)
     return response.data
   } catch (error) {
-    console.error("Error updating ticket:", error)
+    console.error(`Error updating ticket ${ticketId}:`, error)
     throw error
   }
 }
 
 export default api
-

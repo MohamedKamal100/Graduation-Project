@@ -1,45 +1,29 @@
-// import React, { createContext, useEffect, useState } from 'react'
-
-
-
-// export let UserContext = createContext();
-
-// export default function UserContextProvider(props) {
-
-//   const [userLogin, setUserLogin] = useState(() => localStorage.getItem('token'));
-
-//   useEffect(() => {
-//     if (localStorage.getItem('token')) {
-//       setUserLogin(localStorage.getItem('token'))
-//     }
-//   }, [])
-
-//   return (
-
-//     <UserContext.Provider value={{ userLogin, setUserLogin }}>
-//       {props.children}
-//     </UserContext.Provider>
-
-//   )
-// }
-
 "use client"
 
 import { createContext, useState, useEffect } from "react"
 
 export const UserContext = createContext()
 
-export default function UserContextProvider({ children }) {
+export const UserContextProvider = ({ children }) => {
   // Initialize user data from localStorage
-  const [userLogin, setUserLogin] = useState(() => localStorage.getItem("token"))
+  const [userLogin, setUserLogin] = useState(() => {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("token")
+    }
+    return null
+  })
+
   const [userData, setUserData] = useState(() => {
-    const storedUserData = localStorage.getItem("userData")
-    return storedUserData ? JSON.parse(storedUserData) : null
+    if (typeof window !== "undefined") {
+      const storedUserData = localStorage.getItem("userData")
+      return storedUserData ? JSON.parse(storedUserData) : null
+    }
+    return null
   })
 
   // Update localStorage when token changes
   useEffect(() => {
-    if (localStorage.getItem("token")) {
+    if (typeof window !== "undefined" && localStorage.getItem("token")) {
       setUserLogin(localStorage.getItem("token"))
     }
   }, [])
@@ -97,3 +81,4 @@ export default function UserContextProvider({ children }) {
   )
 }
 
+export default UserContextProvider

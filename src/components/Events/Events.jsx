@@ -607,7 +607,7 @@ const Events = () => {
     const categories = ["Sports", "Concert", "Theater", "Conference"]
 
     return (
-      <div className="flex flex-wrap gap-2 mb-4">
+      <div className="flex flex-wrap gap-8 my-6">
         <button
           className={`px-3 py-1 text-sm rounded-full ${!selectedCategory
             ? "bg-blue-600 text-white"
@@ -634,7 +634,7 @@ const Events = () => {
   }
 
   return (
-    <div className="bg-gray-50 dark:bg-gray-900 min-h-screen py-12">
+    <div className="bg-gray-50 dark:bg-gray-900 min-h-screen py-28">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header section */}
         <div className="mb-8">

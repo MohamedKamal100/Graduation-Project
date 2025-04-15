@@ -2,6 +2,7 @@
 
 import { useContext, useEffect, useState } from "react"
 import { Link } from "react-router-dom"
+import { motion } from "framer-motion"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import {
   faCalendarCheck,
@@ -12,13 +13,13 @@ import {
   faStar,
 } from "@fortawesome/free-solid-svg-icons"
 import { UserContext } from "../../context/UserContext"
-
-
+import { useTheme } from "../../context/ThemeContext"
 
 const LandingPage = () => {
   const [currentImage, setCurrentImage] = useState(0)
   const [isVisible, setIsVisible] = useState(true)
-  let { userLogin } = useContext(UserContext)
+  const { userLogin } = useContext(UserContext)
+  const { colors } = useTheme()
 
   // Array of event images
   const images = [
@@ -66,54 +67,112 @@ const LandingPage = () => {
     },
   ]
 
+  // Animation variants
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+      },
+    },
+  }
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.5 },
+    },
+  }
+
   return (
     <div className="min-h-screen flex flex-col">
       {/* Hero Section with Animated Background */}
       <div className="relative min-h-screen flex items-center">
         {/* Animated Background Image */}
         <div className="absolute inset-0 overflow-hidden">
-          <div
-            className={`absolute inset-0 bg-cover bg-center transition-opacity duration-500 ${isVisible ? "opacity-100" : "opacity-0"}`}
+          <motion.div
+            key={currentImage}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: isVisible ? 1 : 0 }}
+            transition={{ duration: 0.5 }}
+            className="absolute inset-0 bg-cover bg-center"
             style={{ backgroundImage: `url(${images[currentImage]})` }}
-          ></div>
-          <div className="absolute inset-0 bg-gradient-to-r from-purple-900/70 to-indigo-900/70"></div>
+          ></motion.div>
+          <div className={`absolute inset-0 bg-gradient-to-r ${colors.primary} opacity-70`}></div>
         </div>
 
         {/* Hero Content */}
         <div className="container mx-auto px-6 relative z-10 text-white">
-          <div className="max-w-3xl">
-            <h1 className="text-5xl md:text-6xl font-bold mb-4">
+          <motion.div
+            className="max-w-3xl"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7 }}
+          >
+            <motion.h1
+              className="text-5xl md:text-6xl font-bold mb-4"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2, duration: 0.7 }}
+            >
               Discover & Celebrate <span className="text-purple-300">Unforgettable</span> Events
-            </h1>
-            <p className="text-xl md:text-2xl mb-8 text-gray-200">
+            </motion.h1>
+            <motion.p
+              className="text-xl md:text-2xl mb-8 text-gray-200"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4, duration: 0.7 }}
+            >
               Your gateway to the most exciting events, gatherings, and experiences around you.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4">
-              {userLogin ? <>    <Link
-                to="/home"
-                className="px-8 py-3 bg-purple-600 hover:bg-purple-700 rounded-full text-white font-medium text-lg transition-colors shadow-lg hover:shadow-xl flex items-center justify-center"
-              >
-                Get Started <FontAwesomeIcon icon={faArrowRight} className="ml-2" />
-              </Link>
-              </> : <> <Link
-                to="/register"
-                className="px-8 py-3 bg-purple-600 hover:bg-purple-700 rounded-full text-white font-medium text-lg transition-colors shadow-lg hover:shadow-xl flex items-center justify-center"
-              >
-                Get Started <FontAwesomeIcon icon={faArrowRight} className="ml-2" />
-              </Link>
-                <Link
-                  to="/login"
-                  className="px-8 py-3 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-full text-white font-medium text-lg transition-colors border border-white/30 shadow-lg hover:shadow-xl"
-                >
-                  Sign In
-                </Link></>}
-
-            </div>
-          </div>
+            </motion.p>
+            <motion.div
+              className="flex flex-col sm:flex-row gap-4"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6, duration: 0.7 }}
+            >
+              {userLogin ? (
+                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                  <Link
+                    to="/home"
+                    className={`px-8 py-3 ${colors.button} rounded-full text-white font-medium text-lg transition-colors shadow-lg hover:shadow-xl flex items-center justify-center`}
+                  >
+                    Get Started <FontAwesomeIcon icon={faArrowRight} className="ml-2" />
+                  </Link>
+                </motion.div>
+              ) : (
+                <>
+                  <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                    <Link
+                      to="/register"
+                      className={`px-8 py-3 ${colors.button} rounded-full text-white font-medium text-lg transition-colors shadow-lg hover:shadow-xl flex items-center justify-center`}
+                    >
+                      Get Started <FontAwesomeIcon icon={faArrowRight} className="ml-2" />
+                    </Link>
+                  </motion.div>
+                  <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                    <Link
+                      to="/login"
+                      className="px-8 py-3 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-full text-white font-medium text-lg transition-colors border border-white/30 shadow-lg hover:shadow-xl"
+                    >
+                      Sign In
+                    </Link>
+                  </motion.div>
+                </>
+              )}
+            </motion.div>
+          </motion.div>
         </div>
 
         {/* Scroll indicator */}
-        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
+        <motion.div
+          className="absolute bottom-8 left-1/2 transform -translate-x-1/2"
+          animate={{ y: [0, 10, 0] }}
+          transition={{ repeat: Number.POSITIVE_INFINITY, duration: 1.5 }}
+        >
           <svg
             className="w-6 h-6 text-white"
             fill="none"
@@ -125,48 +184,76 @@ const LandingPage = () => {
           >
             <path d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
           </svg>
-        </div>
+        </motion.div>
       </div>
 
       {/* Features Section */}
       <div className="py-20 bg-white">
         <div className="container mx-auto px-6">
-          <div className="text-center mb-16">
+          <motion.div
+            className="text-center mb-16"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+          >
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Why Choose Event Dictionary?</h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
               We're more than just an events platform. We're your companion in discovering experiences that will last a
               lifetime.
             </p>
-          </div>
+          </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <motion.div
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8"
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+          >
             {features.map((feature, index) => (
-              <div
+              <motion.div
                 key={index}
+                variants={itemVariants}
                 className="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow border border-gray-100"
+                whileHover={{ y: -5 }}
               >
-                <div className="w-14 h-14 bg-purple-100 rounded-full flex items-center justify-center mb-4 text-purple-600">
+                <div
+                  className={`w-14 h-14 ${colors.light} rounded-full flex items-center justify-center mb-4 ${colors.text}`}
+                >
                   <FontAwesomeIcon icon={feature.icon} className="text-2xl" />
                 </div>
                 <h3 className="text-xl font-semibold mb-2 text-gray-900">{feature.title}</h3>
                 <p className="text-gray-600">{feature.description}</p>
-              </div>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
       </div>
 
       {/* Testimonials Section */}
       <div className="py-20 bg-gray-50">
         <div className="container mx-auto px-6">
-          <div className="text-center mb-16">
+          <motion.div
+            className="text-center mb-16"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+          >
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">What Our Users Say</h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
               Don't just take our word for it. Here's what people are saying about Event Dictionary.
             </p>
-          </div>
+          </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <motion.div
+            className="grid grid-cols-1 md:grid-cols-3 gap-8"
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+          >
             {[
               {
                 name: "Mohamed atef",
@@ -190,9 +277,11 @@ const LandingPage = () => {
                 rating: 4,
               },
             ].map((testimonial, index) => (
-              <div
+              <motion.div
                 key={index}
+                variants={itemVariants}
                 className="bg-white p-8 rounded-xl shadow-md hover:shadow-lg transition-shadow border border-gray-100"
+                whileHover={{ y: -5 }}
               >
                 <div className="flex items-center mb-4">
                   {[...Array(5)].map((_, i) => (
@@ -205,7 +294,9 @@ const LandingPage = () => {
                 </div>
                 <p className="text-gray-600 italic mb-6">"{testimonial.quote}"</p>
                 <div className="flex items-center">
-                  <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center text-purple-600 font-bold">
+                  <div
+                    className={`w-10 h-10 ${colors.light} rounded-full flex items-center justify-center ${colors.text} font-bold`}
+                  >
                     {testimonial.name.charAt(0)}
                   </div>
                   <div className="ml-3">
@@ -213,30 +304,57 @@ const LandingPage = () => {
                     <p className="text-sm text-gray-500">{testimonial.role}</p>
                   </div>
                 </div>
-              </div>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
       </div>
 
       {/* CTA Section */}
-      <div className="py-16 bg-gradient-to-r from-purple-600 to-indigo-600 text-white">
+      <div className={`py-16 bg-gradient-to-r ${colors.primary} text-white`}>
         <div className="container mx-auto px-6 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">Ready to Discover Amazing Events?</h2>
-          <p className="text-xl text-purple-100 mb-8 max-w-2xl mx-auto">
+          <motion.h2
+            className="text-3xl md:text-4xl font-bold mb-4"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+          >
+            Ready to Discover Amazing Events?
+          </motion.h2>
+          <motion.p
+            className="text-xl text-purple-100 mb-8 max-w-2xl mx-auto"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+          >
             Join thousands of users who are already discovering and attending the best events in their area.
-          </p>
-          {userLogin ? <Link
-            to="/home"
-            className="px-8 py-3 bg-white text-purple-600 hover:bg-gray-100 rounded-full font-medium text-lg transition-colors shadow-lg hover:shadow-xl inline-block"
+          </motion.p>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
           >
-            Get Started Today
-          </Link> : <Link
-            to="/login"
-            className="px-8 py-3 bg-white text-purple-600 hover:bg-gray-100 rounded-full font-medium text-lg transition-colors shadow-lg hover:shadow-xl inline-block"
-          >
-            Get Started Today
-          </Link>}
+            {userLogin ? (
+              <Link
+                to="/home"
+                className="px-8 py-3 bg-white text-purple-600 hover:bg-gray-100 rounded-full font-medium text-lg transition-colors shadow-lg hover:shadow-xl inline-block"
+              >
+                Get Started Today
+              </Link>
+            ) : (
+              <Link
+                to="/login"
+                className="px-8 py-3 bg-white text-purple-600 hover:bg-gray-100 rounded-full font-medium text-lg transition-colors shadow-lg hover:shadow-xl inline-block"
+              >
+                Get Started Today
+              </Link>
+            )}
+          </motion.div>
         </div>
       </div>
     </div>
@@ -244,4 +362,3 @@ const LandingPage = () => {
 }
 
 export default LandingPage
-

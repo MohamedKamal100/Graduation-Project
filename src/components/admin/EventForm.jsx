@@ -8,16 +8,20 @@ import {
   faMapMarkerAlt,
   faDollarSign,
   faUsers,
-  faImage,
   faTags,
   faInfoCircle,
   faSave,
   faTimes,
   faTicketAlt,
   faClock,
+  faArrowLeft,
+  faEdit,
+  faPlus,
+  faSpinner,
 } from "@fortawesome/free-solid-svg-icons"
 import { createEvent, updateEvent, fetchEventById, fetchCategories } from "../../api/adminApi"
 import { useToast } from "../../context/ToastContext"
+import ImageUploader from "../ImageUploader/ImageUploader"
 
 const EventForm = ({ isEditing = false }) => {
   const { eventId } = useParams()
@@ -26,6 +30,7 @@ const EventForm = ({ isEditing = false }) => {
   const [loading, setLoading] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [categories, setCategories] = useState([])
+  const [imageFile, setImageFile] = useState(null)
 
   // Add this useEffect to fetch categories when component mounts
   useEffect(() => {
@@ -110,6 +115,23 @@ const EventForm = ({ isEditing = false }) => {
     }))
   }
 
+  const handleImageSelect = (file) => {
+    setImageFile(file)
+    if (file) {
+      // Create a temporary URL for preview
+      const imageUrl = URL.createObjectURL(file)
+      setFormData((prev) => ({
+        ...prev,
+        image: imageUrl,
+      }))
+    } else {
+      setFormData((prev) => ({
+        ...prev,
+        image: "",
+      }))
+    }
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     setSubmitting(true)
@@ -129,6 +151,21 @@ const EventForm = ({ isEditing = false }) => {
 
       // Remove time field as it's not needed in the API
       delete eventData.time
+
+      // Handle image upload if there's a new image file
+      if (imageFile) {
+        // In a real application, you would upload the image to a server
+        // and get back a URL to store in the database
+        // For this example, we'll just use the local file URL
+        eventData.image = URL.createObjectURL(imageFile)
+
+        // In a real application, you would do something like:
+        // const formData = new FormData()
+        // formData.append('image', imageFile)
+        // const response = await fetch('/api/upload', { method: 'POST', body: formData })
+        // const data = await response.json()
+        // eventData.image = data.imageUrl
+      }
 
       if (isEditing) {
         await updateEvent(eventId, eventData)
@@ -155,26 +192,41 @@ const EventForm = ({ isEditing = false }) => {
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
       </div>
     )
   }
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
-      <div className="p-6 border-b border-gray-200 dark:border-gray-700">
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-          {isEditing ? "Edit Event" : "Create New Event"}
-        </h3>
-        <p className="text-sm text-gray-500 dark:text-gray-400">
-          {isEditing ? "Update the event details below" : "Fill in the details to create a new event"}
-        </p>
+    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden animate-fadeIn">
+      <div className="p-6 border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-primary/5 to-accent/5 dark:from-primary/10 dark:to-accent/10">
+        <div className="flex items-center">
+          <button
+            onClick={() => navigate("/admin/events")}
+            className="mr-4 p-2 rounded-full bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors hover-scale"
+            aria-label="Go back"
+          >
+            <FontAwesomeIcon icon={faArrowLeft} className="w-4 h-4" />
+          </button>
+          <div>
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
+              <FontAwesomeIcon
+                icon={isEditing ? faEdit : faPlus}
+                className="mr-2 text-primary dark:text-primary-dark"
+              />
+              {isEditing ? "Edit Event" : "Create New Event"}
+            </h3>
+            <p className="text-sm text-gray-500 dark:text-gray-400">
+              {isEditing ? "Update the event details below" : "Fill in the details to create a new event"}
+            </p>
+          </div>
+        </div>
       </div>
 
       <form onSubmit={handleSubmit} className="p-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Event Name */}
-          <div className="col-span-1 md:col-span-2">
+          <div className="col-span-1 md:col-span-2 animate-slideUp">
             <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               Event Name
             </label>
@@ -189,14 +241,14 @@ const EventForm = ({ isEditing = false }) => {
                 value={formData.name}
                 onChange={handleChange}
                 required
-                className="pl-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 py-2 px-3 text-gray-900 dark:text-white shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                className="pl-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 py-2 px-3 text-gray-900 dark:text-white shadow-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary transition-all duration-200"
                 placeholder="Enter event name"
               />
             </div>
           </div>
 
           {/* Description */}
-          <div className="col-span-1 md:col-span-2">
+          <div className="col-span-1 md:col-span-2 animate-slideUp delay-100">
             <label htmlFor="description" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               Description
             </label>
@@ -207,13 +259,13 @@ const EventForm = ({ isEditing = false }) => {
               onChange={handleChange}
               required
               rows={4}
-              className="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 py-2 px-3 text-gray-900 dark:text-white shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 py-2 px-3 text-gray-900 dark:text-white shadow-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary transition-all duration-200"
               placeholder="Enter event description"
             />
           </div>
 
           {/* Date */}
-          <div>
+          <div className="animate-slideUp delay-200">
             <label htmlFor="date" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               Date
             </label>
@@ -228,13 +280,13 @@ const EventForm = ({ isEditing = false }) => {
                 value={formData.date}
                 onChange={handleChange}
                 required
-                className="pl-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 py-2 px-3 text-gray-900 dark:text-white shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                className="pl-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 py-2 px-3 text-gray-900 dark:text-white shadow-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary transition-all duration-200"
               />
             </div>
           </div>
 
           {/* Time */}
-          <div>
+          <div className="animate-slideUp delay-200">
             <label htmlFor="time" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               Time
             </label>
@@ -249,13 +301,13 @@ const EventForm = ({ isEditing = false }) => {
                 value={formData.time}
                 onChange={handleChange}
                 required
-                className="pl-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 py-2 px-3 text-gray-900 dark:text-white shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                className="pl-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 py-2 px-3 text-gray-900 dark:text-white shadow-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary transition-all duration-200"
               />
             </div>
           </div>
 
           {/* Location */}
-          <div>
+          <div className="animate-slideUp delay-300">
             <label htmlFor="location" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               Location
             </label>
@@ -270,14 +322,14 @@ const EventForm = ({ isEditing = false }) => {
                 value={formData.location}
                 onChange={handleChange}
                 required
-                className="pl-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 py-2 px-3 text-gray-900 dark:text-white shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                className="pl-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 py-2 px-3 text-gray-900 dark:text-white shadow-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary transition-all duration-200"
                 placeholder="Enter event location"
               />
             </div>
           </div>
 
           {/* Category */}
-          <div>
+          <div className="animate-slideUp delay-300">
             <label htmlFor="category" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               Category
             </label>
@@ -291,7 +343,7 @@ const EventForm = ({ isEditing = false }) => {
                 value={formData.category}
                 onChange={handleChange}
                 required
-                className="pl-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 py-2 px-3 text-gray-900 dark:text-white shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                className="pl-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 py-2 px-3 text-gray-900 dark:text-white shadow-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary transition-all duration-200"
               >
                 <option value="">Select a category</option>
                 {categories.map((category) => (
@@ -304,7 +356,7 @@ const EventForm = ({ isEditing = false }) => {
           </div>
 
           {/* Price */}
-          <div>
+          <div className="animate-slideUp delay-400">
             <label htmlFor="price" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               Price
             </label>
@@ -321,14 +373,14 @@ const EventForm = ({ isEditing = false }) => {
                 required
                 min="0"
                 step="0.01"
-                className="pl-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 py-2 px-3 text-gray-900 dark:text-white shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                className="pl-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 py-2 px-3 text-gray-900 dark:text-white shadow-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary transition-all duration-200"
                 placeholder="0.00"
               />
             </div>
           </div>
 
           {/* Capacity */}
-          <div>
+          <div className="animate-slideUp delay-400">
             <label htmlFor="capacity" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               Capacity
             </label>
@@ -344,14 +396,14 @@ const EventForm = ({ isEditing = false }) => {
                 onChange={handleChange}
                 required
                 min="1"
-                className="pl-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 py-2 px-3 text-gray-900 dark:text-white shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                className="pl-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 py-2 px-3 text-gray-900 dark:text-white shadow-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary transition-all duration-200"
                 placeholder="Enter maximum capacity"
               />
             </div>
           </div>
 
           {/* Available Tickets */}
-          <div>
+          <div className="animate-slideUp delay-500">
             <label
               htmlFor="available_tickets"
               className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
@@ -371,40 +423,27 @@ const EventForm = ({ isEditing = false }) => {
                 required
                 min="0"
                 max={formData.capacity}
-                className="pl-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 py-2 px-3 text-gray-900 dark:text-white shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                className="pl-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 py-2 px-3 text-gray-900 dark:text-white shadow-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary transition-all duration-200"
                 placeholder="Enter available tickets"
               />
             </div>
           </div>
 
-          {/* Image URL */}
-          <div className="col-span-1 md:col-span-2">
+          {/* Image Upload */}
+          <div className="col-span-1 md:col-span-2 animate-slideUp delay-500">
             <label htmlFor="image" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Image URL
+              Event Image
             </label>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <FontAwesomeIcon icon={faImage} className="text-gray-400" />
-              </div>
-              <input
-                type="url"
-                id="image"
-                name="image"
-                value={formData.image}
-                onChange={handleChange}
-                className="pl-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 py-2 px-3 text-gray-900 dark:text-white shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                placeholder="Enter image URL"
-              />
-            </div>
+            <ImageUploader initialImage={formData.image} onImageSelect={handleImageSelect} className="mt-1" />
           </div>
         </div>
 
         {/* Form Actions */}
-        <div className="mt-8 flex justify-end space-x-3">
+        <div className="mt-8 flex justify-end space-x-3 animate-slideUp delay-600">
           <button
             type="button"
             onClick={() => navigate("/admin/events")}
-            className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+            className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all duration-200 hover-scale"
           >
             <FontAwesomeIcon icon={faTimes} className="mr-2" />
             Cancel
@@ -412,9 +451,12 @@ const EventForm = ({ isEditing = false }) => {
           <button
             type="submit"
             disabled={submitting}
-            className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gradient-to-r from-primary to-accent hover:from-primary-dark hover:to-accent focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 hover-scale"
           >
-            <FontAwesomeIcon icon={faSave} className="mr-2" />
+            <FontAwesomeIcon
+              icon={submitting ? faSpinner : faSave}
+              className={`mr-2 ${submitting ? "animate-spin" : ""}`}
+            />
             {submitting ? "Saving..." : isEditing ? "Update Event" : "Create Event"}
           </button>
         </div>
@@ -424,4 +466,3 @@ const EventForm = ({ isEditing = false }) => {
 }
 
 export default EventForm
-

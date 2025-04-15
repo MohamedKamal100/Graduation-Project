@@ -1,0 +1,257 @@
+:root {
+  /* Base colors - Enhanced color palette */
+  --primary: 250 95% 64%; /* Vibrant purple */
+  --primary-foreground: 210 40% 98%;
+
+  --secondary: 187 100% 42%; /* Teal */
+  --secondary-foreground: 210 40% 98%;
+
+  --accent: 262 83% 58%; /* Violet */
+  --accent-foreground: 210 40% 98%;
+
+  --success: 142 76% 36%; /* Green */
+  --success-foreground: 210 40% 98%;
+
+  --warning: 38 92% 50%; /* Amber */
+  --warning-foreground: 210 40% 98%;
+
+  --danger: 0 84% 60%; /* Red */
+  --danger-foreground: 210 40% 98%;
+
+  --info: 199 89% 48%; /* Blue */
+  --info-foreground: 210 40% 98%;
+
+  --background: 0 0% 100%;
+  --foreground: 222.2 47.4% 11.2%;
+
+  --muted: 210 40% 96.1%;
+  --muted-foreground: 215.4 16.3% 46.9%;
+
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 210 40% 98%;
+
+  --card: 0 0% 100%;
+  --card-foreground: 222.2 47.4% 11.2%;
+
+  --popover: 0 0% 100%;
+  --popover-foreground: 222.2 47.4% 11.2%;
+
+  --border: 214.3 31.8% 91.4%;
+  --input: 214.3 31.8% 91.4%;
+  --ring: var(--primary);
+
+  /* Sidebar specific */
+  --sidebar-width: 280px;
+  --sidebar-width-collapsed: 80px;
+  --header-height: 64px;
+  --radius: 0.5rem;
+
+  /* Animation durations */
+  --animation-fast: 150ms;
+  --animation-normal: 300ms;
+  --animation-slow: 500ms;
+}
+
+.dark {
+  --primary: 250 95% 64%; /* Keep the same vibrant purple */
+  --primary-foreground: 210 40% 98%;
+
+  --secondary: 187 100% 42%; /* Keep the same teal */
+  --secondary-foreground: 210 40% 98%;
+
+  --accent: 262 83% 58%; /* Keep the same violet */
+  --accent-foreground: 210 40% 98%;
+
+  --success: 142 76% 36%; /* Keep the same green */
+  --success-foreground: 210 40% 98%;
+
+  --warning: 38 92% 50%; /* Keep the same amber */
+  --warning-foreground: 210 40% 98%;
+
+  --danger: 0 84% 60%; /* Keep the same red */
+  --danger-foreground: 210 40% 98%;
+
+  --info: 199 89% 48%; /* Keep the same blue */
+  --info-foreground: 210 40% 98%;
+
+  --background: 222.2 84% 4.9%;
+  --foreground: 210 40% 98%;
+
+  --muted: 217.2 32.6% 17.5%;
+  --muted-foreground: 215 20.2% 65.1%;
+
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 210 40% 98%;
+
+  --card: 222.2 84% 4.9%;
+  --card-foreground: 210 40% 98%;
+
+  --popover: 222.2 84% 4.9%;
+  --popover-foreground: 210 40% 98%;
+
+  --border: 217.2 32.6% 17.5%;
+  --input: 217.2 32.6% 17.5%;
+  --ring: var(--primary);
+}
+:root {
+  --primary-color: #6d28d9;
+  --primary-hover: #5b21b6;
+  --secondary-color: #4f46e5;
+  --secondary-hover: #4338ca;
+  --accent-color: #8b5cf6;
+  --accent-hover: #7c3aed;
+  --success-color: #10b981;
+  --warning-color: #f59e0b;
+  --error-color: #ef4444;
+  --info-color: #3b82f6;
+  --background-light: #f9fafb;
+  --background-dark: #111827;
+  --card-light: #ffffff;
+  --card-dark: #1f2937;
+  --text-light: #111827;
+  --text-dark: #f9fafb;
+  --text-muted-light: #6b7280;
+  --text-muted-dark: #9ca3af;
+  --border-light: #e5e7eb;
+  --border-dark: #374151;
+}
+
+.light {
+  --background: var(--background-light);
+  --card-bg: var(--card-light);
+  --text: var(--text-light);
+  --text-muted: var(--text-muted-light);
+  --border: var(--border-light);
+}
+
+.dark {
+  --background: var(--background-dark);
+  --card-bg: var(--card-dark);
+  --text: var(--text-dark);
+  --text-muted: var(--text-muted-dark);
+  --border: var(--border-dark);
+}
+
+/* Animation classes */
+@keyframes heart-pop-in {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.3);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes heart-pop-out {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.3);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.heart-pop-in {
+  animation: heart-pop-in 0.6s ease-in-out;
+}
+
+.heart-pop-out {
+  animation: heart-pop-out 0.6s ease-in-out;
+}
+
+.spin {
+  animation: spin 1s linear infinite;
+}
+
+/* Hover lift effect */
+.hover-lift {
+  transition: transform 0.3s ease;
+}
+
+.hover-lift:hover {
+  transform: translateY(-5px);
+}
+
+/* Fade in animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+/* Slide in animation */
+@keyframes slideInBottom {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.animate-slideInBottom {
+  animation: slideInBottom 0.5s ease-out;
+}
+
+/* Scale in animation */
+@keyframes scaleIn {
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.animate-scaleIn {
+  animation: scaleIn 0.5s ease-out;
+}
+
+/* Heartbeat animation */
+@keyframes heartbeat {
+  0% {
+    transform: scale(1);
+  }
+  14% {
+    transform: scale(1.3);
+  }
+  28% {
+    transform: scale(1);
+  }
+  42% {
+    transform: scale(1.3);
+  }
+  70% {
+    transform: scale(1);
+  }
+}
+
+.animate-heartbeat {
+  animation: heartbeat 1.5s ease-in-out;
+}
