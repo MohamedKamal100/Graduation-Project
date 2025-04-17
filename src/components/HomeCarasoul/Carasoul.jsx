@@ -181,14 +181,7 @@ export default function Carasoul() {
                       <span>{events[currentImage].location}</span>
                     </div>
                   </motion.div>
-                  <motion.button
-                    variants={textVariants}
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-bold py-3 px-8 rounded-full shadow-lg transition-all"
-                  >
-                    Learn More
-                  </motion.button>
+
                 </motion.div>
               </motion.div>
             </AnimatePresence>
