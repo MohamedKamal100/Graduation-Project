@@ -471,7 +471,7 @@ const HotEvents = () => {
                 >
                   <div className="relative">
                     <img
-                      src={event.image || "/placeholder.svg"}
+                      src={event.image_path || "/placeholder.svg"}
                       alt={event.name}
                       className="w-full h-52 object-cover transition-transform duration-700 group-hover:scale-110"
                     />
