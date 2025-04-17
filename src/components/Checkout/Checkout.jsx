@@ -647,7 +647,7 @@ const Checkout = () => {
           transition={{ duration: 0.5 }}
           className="mb-8"
         >
-          <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-6 flex items-center">
+          <h2 className="text-3xl pt-20 font-bold text-gray-900 dark:text-white mb-6 flex items-center">
             <div className="w-12 h-12 bg-indigo-100 dark:bg-indigo-900/30 rounded-full flex items-center justify-center mr-4">
               <FontAwesomeIcon icon={faTicketAlt} className="text-indigo-600 dark:text-indigo-400 text-xl" />
             </div>

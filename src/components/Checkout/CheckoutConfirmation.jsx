@@ -142,7 +142,7 @@ const CheckoutConfirmation = () => {
   const { event, quantity, totalPrice, paymentId } = ticketData
 
   return (
-    <div className="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 min-h-screen py-12">
+    <div className="bg-gradient-to-br pt-24 from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 min-h-screen py-12">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
@@ -156,7 +156,7 @@ const CheckoutConfirmation = () => {
           >
             <FontAwesomeIcon icon={faArrowLeft} className="text-indigo-600 dark:text-indigo-400" />
           </button>
-          <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-6 flex items-center">
+          <h2 className="text-3xl pt-14 font-bold text-gray-900 dark:text-white mb-6 flex items-center">
             <div className="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mr-4">
               <FontAwesomeIcon icon={faCheckCircle} className="text-green-600 dark:text-green-400 text-xl" />
             </div>

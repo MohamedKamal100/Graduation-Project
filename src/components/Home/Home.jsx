@@ -89,7 +89,7 @@ export default function Home() {
         <HotEvents />
       </div>
 
-      {/* Call to Action */}
+      {/* Call to Action
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -110,7 +110,7 @@ export default function Home() {
             Explore All Events
           </motion.button>
         </div>
-      </motion.div>
+      </motion.div> */}
     </div>
   )
 }
