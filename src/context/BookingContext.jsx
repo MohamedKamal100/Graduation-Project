@@ -115,7 +115,7 @@ export const BookingProvider = ({ children }) => {
       console.log("Fetching user tickets...")
 
       // Updated to use the correct endpoint
-      const response = await axios.get("http://127.0.0.1:8000/mytickets", { headers })
+      const response = await axios.get("http://127.0.0.1:8000/api/mytickets", { headers })
       console.log("Tickets fetched successfully:", response.data)
 
       // Process tickets to include event data
@@ -142,6 +142,33 @@ export const BookingProvider = ({ children }) => {
       return []
     } finally {
       setLoading(false)
+    }
+  }
+
+  // Remove a ticket
+  const removeTicket = async (ticketId) => {
+    try {
+      setButtonLoadingStates((prev) => ({
+        ...prev,
+        [`remove-${ticketId}`]: true,
+      }))
+
+      await axios.delete(`http://127.0.0.1:8000/api/tickets/${ticketId}`, { headers })
+
+      // Update local state
+      setTickets((prevTickets) => prevTickets.filter((ticket) => ticket.id !== ticketId))
+
+      toast.success("Ticket cancelled successfully")
+      return true
+    } catch (err) {
+      console.error("Error removing ticket:", err)
+      toast.error(err.response?.data?.message || "Failed to cancel ticket. Please try again.")
+      return false
+    } finally {
+      setButtonLoadingStates((prev) => ({
+        ...prev,
+        [`remove-${ticketId}`]: false,
+      }))
     }
   }
 
@@ -202,6 +229,7 @@ export const BookingProvider = ({ children }) => {
     buttonLoadingStates,
     processPayment,
     getUserTickets,
+    removeTicket,
     updateEventTicketQuantity,
     getEventTicketQuantity,
     calculateTotalPrice,

@@ -1,0 +1,257 @@
+/* CategoryCarousel Styles */
+.category-carousel {
+  --primary-color: #8b5cf6;
+  --secondary-color: #6d28d9;
+  --hover-color: #7c3aed;
+  --light-bg: #f3f4f6;
+  --dark-bg: #1f2937;
+}
+
+.category-carousel-container {
+  padding: 2.5rem 1rem;
+  transition: all 0.3s ease;
+}
+
+.category-carousel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.category-carousel-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #111827;
+  transition: color 0.3s ease;
+}
+
+.dark .category-carousel-title {
+  color: #f9fafb;
+}
+
+.category-carousel-link {
+  color: var(--primary-color);
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  transition: color 0.3s ease, transform 0.2s ease;
+}
+
+.category-carousel-link:hover {
+  color: var(--hover-color);
+  transform: translateX(2px);
+}
+
+.category-carousel-link svg {
+  margin-left: 0.25rem;
+  transition: transform 0.2s ease;
+}
+
+.category-carousel-link:hover svg {
+  transform: translateX(2px);
+}
+
+.category-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.5rem;
+}
+
+.category-circle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 6rem;
+  height: 6rem;
+  border-radius: 50%;
+  margin-bottom: 0.75rem;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+  overflow: hidden;
+}
+
+.category-circle::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.2) 0%,
+    rgba(255, 255, 255, 0) 70%
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.category-circle:hover::after {
+  opacity: 1;
+}
+
+.category-circle:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+.category-circle svg {
+  font-size: 1.75rem;
+  transition: transform 0.3s ease;
+}
+
+.category-circle:hover svg {
+  transform: scale(1.2);
+}
+
+.category-name {
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-align: center;
+  color: #374151;
+  transition: color 0.3s ease;
+}
+
+.dark .category-name {
+  color: #d1d5db;
+}
+
+.category-count {
+  font-size: 0.75rem;
+  color: #6b7280;
+  margin-top: 0.25rem;
+  transition: color 0.3s ease;
+}
+
+.dark .category-count {
+  color: #9ca3af;
+}
+
+/* Custom Slick Slider Styles */
+.category-carousel .slick-dots {
+  bottom: -30px;
+}
+
+.category-carousel .slick-dots li button:before {
+  font-size: 8px;
+  color: #d1d5db;
+  opacity: 0.7;
+  transition: all 0.3s ease;
+}
+
+.category-carousel .slick-dots li.slick-active button:before {
+  color: var(--primary-color);
+  opacity: 1;
+}
+
+.category-carousel .slick-prev,
+.category-carousel .slick-next {
+  z-index: 10;
+}
+
+/* Custom Arrow Animation */
+.custom-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  background-color: white;
+  padding: 0.75rem;
+  border-radius: 50%;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.dark .custom-arrow {
+  background-color: #374151;
+  color: #e5e7eb;
+}
+
+.custom-arrow:hover {
+  background-color: #f9fafb;
+  transform: translateY(-50%) scale(1.1);
+}
+
+.dark .custom-arrow:hover {
+  background-color: #4b5563;
+}
+
+.custom-arrow.left {
+  left: 0.5rem;
+}
+
+.custom-arrow.right {
+  right: 0.5rem;
+}
+
+/* Loading Animation */
+.category-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 10rem;
+}
+
+@keyframes categoryFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.category-fade-in {
+  animation: categoryFadeIn 0.5s ease forwards;
+}
+
+/* Color Classes for Category Circles */
+.category-color-1 {
+  background-color: #ede9fe;
+  color: #7c3aed;
+}
+
+.category-color-2 {
+  background-color: #dbeafe;
+  color: #3b82f6;
+}
+
+.category-color-3 {
+  background-color: #fce7f3;
+  color: #ec4899;
+}
+
+.category-color-4 {
+  background-color: #d1fae5;
+  color: #10b981;
+}
+
+.category-color-5 {
+  background-color: #fef3c7;
+  color: #f59e0b;
+}
+
+.category-color-6 {
+  background-color: #fee2e2;
+  color: #ef4444;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 640px) {
+  .category-circle {
+    width: 5rem;
+    height: 5rem;
+  }
+
+  .category-carousel-title {
+    font-size: 1.25rem;
+  }
+}

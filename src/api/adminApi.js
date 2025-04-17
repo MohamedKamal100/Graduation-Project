@@ -25,8 +25,52 @@
 
 // export const createEvent = async (eventData) => {
 //   try {
-//     const response = await api.post("/events", eventData)
-//     return response.data
+//     // Check if eventData is FormData (for image uploads)
+//     if (eventData instanceof FormData) {
+//       // Use the fetch API directly for FormData
+//       const token = localStorage.getItem("token")
+//       const baseUrl = process.env.REACT_APP_API_URL || "http://127.0.0.1:8000/api"
+
+//       console.log("Creating event with FormData to:", baseUrl)
+
+//       // Log FormData contents for debugging
+//       for (const pair of eventData.entries()) {
+//         console.log(pair[0] + ": " + (pair[0] === "image_path" ? "File object" : pair[1]))
+//       }
+
+//       const response = await fetch(`${baseUrl}/events`, {
+//         method: "POST",
+//         headers: {
+//           Authorization: `Bearer ${token}`,
+//           Accept: "application/json",
+//           // Don't set Content-Type when sending FormData
+//         },
+//         body: eventData,
+//       })
+
+//       if (!response.ok) {
+//         const errorData = await response.json()
+//         console.error("API error response:", errorData)
+//         throw new Error(errorData.message || `HTTP error! status: ${response.status}`)
+//       }
+
+//       const responseData = await response.json()
+//       console.log("API success response:", responseData)
+
+//       // Handle the API response format which includes event in a nested property
+//       return responseData.event || responseData
+//     } else {
+//       // Regular JSON data
+//       const formattedData = {
+//         ...eventData,
+//         category_id: getCategoryId(eventData.category),
+//       }
+
+//       const response = await api.post("/events", formattedData)
+
+//       // Handle the API response format which includes event in a nested property
+//       return response.data.event || response.data
+//     }
 //   } catch (error) {
 //     console.error("Error creating event:", error)
 //     throw error
@@ -35,8 +79,52 @@
 
 // export const updateEvent = async (eventId, eventData) => {
 //   try {
-//     const response = await api.put(`/events/${eventId}`, eventData)
-//     return response.data
+//     // Check if eventData is FormData (for image uploads)
+//     if (eventData instanceof FormData) {
+//       // Use the fetch API directly for FormData
+//       const token = localStorage.getItem("token")
+//       const baseUrl = process.env.REACT_APP_API_URL || "http://127.0.0.1:8000/api"
+
+//       console.log(`Updating event ${eventId} with FormData`)
+
+//       // Log FormData contents for debugging
+//       for (const pair of eventData.entries()) {
+//         console.log(pair[0] + ": " + (pair[0] === "image_path" ? "File object" : pair[1]))
+//       }
+
+//       const response = await fetch(`${baseUrl}/events/${eventId}`, {
+//         method: "POST", // Use POST with _method=PUT for Laravel
+//         headers: {
+//           Authorization: `Bearer ${token}`,
+//           Accept: "application/json",
+//           // Don't set Content-Type when sending FormData
+//         },
+//         body: eventData,
+//       })
+
+//       if (!response.ok) {
+//         const errorData = await response.json()
+//         console.error("API error response:", errorData)
+//         throw new Error(errorData.message || `HTTP error! status: ${response.status}`)
+//       }
+
+//       const responseData = await response.json()
+//       console.log("API success response:", responseData)
+
+//       // Handle the API response format which includes event in a nested property
+//       return responseData.event || responseData
+//     } else {
+//       // Regular JSON data
+//       const formattedData = {
+//         ...eventData,
+//         category_id: getCategoryId(eventData.category),
+//       }
+
+//       const response = await api.put(`/events/${eventId}`, formattedData)
+
+//       // Handle the API response format which includes event in a nested property
+//       return response.data.event || response.data
+//     }
 //   } catch (error) {
 //     console.error(`Error updating event ${eventId}:`, error)
 //     throw error
@@ -53,6 +141,25 @@
 //   }
 // }
 
+// // Helper function to get category_id from category name
+// function getCategoryId(categoryName) {
+//   if (!categoryName) return 1
+
+//   const categoryMap = {
+//     concert: 1,
+//     theater: 2,
+//     sports: 3,
+//     conference: 4,
+//     music: 1,
+//     arts: 5,
+//     technology: 6,
+//     food: 7,
+//     business: 8,
+//     education: 9,
+//   }
+//   return categoryMap[categoryName.toLowerCase()] || 1
+// }
+
 // // Users CRUD
 // export const fetchAllUsers = async () => {
 //   try {
@@ -60,6 +167,16 @@
 //     return response.data
 //   } catch (error) {
 //     console.error("Error fetching all users:", error)
+//     throw error
+//   }
+// }
+
+// export const fetchUserById = async (userId) => {
+//   try {
+//     const response = await api.get(`/users/${userId}`)
+//     return response.data
+//   } catch (error) {
+//     console.error(`Error fetching user ${userId}:`, error)
 //     throw error
 //   }
 // }
@@ -138,68 +255,65 @@
 // // Dashboard statistics
 // export const fetchDashboardStats = async () => {
 //   try {
-//     const response = await api.get("/admin/stats")
-//     return response.data
-//   } catch (error) {
-//     console.error("Error fetching dashboard statistics:", error)
-//     // Return mock data if API endpoint doesn't exist yet
+//     // Fetch all the data we need for the dashboard
+//     const [events, users, tickets] = await Promise.all([
+//       fetchAllEvents(),
+//       fetchAllUsers(),
+//       fetchAllTickets().catch(() => []), // If tickets endpoint doesn't exist yet
+//     ])
+
+//     // Calculate statistics
+//     const totalEvents = events.length
+//     const totalUsers = users.length
+//     const totalTickets = tickets.length || 0
+
+//     // Calculate revenue (sum of all ticket prices)
+//     const revenue = tickets.reduce((sum, ticket) => sum + (Number.parseFloat(ticket.price) || 0), 0)
+
+//     // Get recent events (last 5)
+//     const recentEvents = [...events]
+//       .sort((a, b) => new Date(b.created_at || b.date) - new Date(a.created_at || a.date))
+//       .slice(0, 5)
+
+//     // Get recent users (last 5)
+//     const recentUsers = [...users].sort((a, b) => new Date(b.created_at) - new Date(a.created_at)).slice(0, 5)
+
+//     // Calculate tickets by category
+//     const ticketsByCategory = {}
+//     events.forEach((event) => {
+//       if (event.category) {
+//         if (!ticketsByCategory[event.category]) {
+//           ticketsByCategory[event.category] = 0
+//         }
+//         ticketsByCategory[event.category] += event.available_tickets || 0
+//       }
+//     })
+
+//     // Format tickets by category for display
+//     const formattedTicketsByCategory = Object.entries(ticketsByCategory).map(([category, count]) => ({
+//       category,
+//       count,
+//     }))
+
+//     // Calculate total tickets
+//     const totalCategoryTickets = formattedTicketsByCategory.reduce((sum, item) => sum + item.count, 0)
+
+//     // Add percentage to each category
+//     formattedTicketsByCategory.forEach((item) => {
+//       item.percentage = totalCategoryTickets > 0 ? Math.round((item.count / totalCategoryTickets) * 100) : 0
+//     })
+
 //     return {
-//       totalEvents: 0,
-//       totalUsers: 0,
-//       totalTickets: 0,
-//       revenue: 0,
+//       totalEvents,
+//       totalUsers,
+//       totalTickets,
+//       revenue,
+//       recentEvents,
+//       recentUsers,
+//       ticketsByCategory: formattedTicketsByCategory,
 //     }
-//   }
-// }
-
-// // Reviews CRUD
-// export const fetchAllReviews = async () => {
-//   try {
-//     const response = await api.get("/reviews")
-//     return response.data
 //   } catch (error) {
-//     console.error("Error fetching all reviews:", error)
-//     throw error
-//   }
-// }
-
-// export const updateReview = async (reviewId, reviewData) => {
-//   try {
-//     const response = await api.put(`/reviews/${reviewId}`, reviewData)
-//     return response.data
-//   } catch (error) {
-//     console.error(`Error updating review ${reviewId}:`, error)
-//     throw error
-//   }
-// }
-
-// export const deleteReview = async (reviewId) => {
-//   try {
-//     const response = await api.delete(`/reviews/${reviewId}`)
-//     return response.data
-//   } catch (error) {
-//     console.error(`Error deleting review ${reviewId}:`, error)
-//     throw error
-//   }
-// }
-
-// // Payments CRUD
-// export const fetchAllPayments = async () => {
-//   try {
-//     const response = await api.get("/payments")
-//     return response.data
-//   } catch (error) {
-//     console.error("Error fetching all payments:", error)
-//     throw error
-//   }
-// }
-
-// export const updatePayment = async (paymentId, paymentData) => {
-//   try {
-//     const response = await api.put(`/payments/${paymentId}`, paymentData)
-//     return response.data
-//   } catch (error) {
-//     console.error(`Error updating payment ${paymentId}:`, error)
+//     console.error("Error calculating dashboard statistics:", error)
 //     throw error
 //   }
 // }
@@ -211,6 +325,50 @@
 //     return response.data
 //   } catch (error) {
 //     console.error("Error fetching categories:", error)
+//     // Fallback categories if API fails
+//     return [
+//       { id: 1, name: "music" },
+//       { id: 2, name: "theater" },
+//       { id: 3, name: "sports" },
+//       { id: 4, name: "conference" },
+//       { id: 5, name: "arts" },
+//       { id: 6, name: "technology" },
+//       { id: 7, name: "food" },
+//       { id: 8, name: "business" },
+//       { id: 9, name: "education" },
+//     ]
+//   }
+// }
+
+// // Helper function to handle image uploads
+// export const uploadEventImage = async (imageFile) => {
+//   try {
+//     const formData = new FormData()
+//     formData.append("image", imageFile)
+
+//     const token = localStorage.getItem("token")
+//     const baseUrl = process.env.REACT_APP_API_URL
+//       ? process.env.REACT_APP_API_URL.replace(/\/api\/?$/, "")
+//       : "http://127.0.0.1:8000"
+
+//     const response = await fetch(`${baseUrl}/api/upload-image`, {
+//       method: "POST",
+//       headers: {
+//         Authorization: `Bearer ${token}`,
+//         Accept: "application/json",
+//         "X-Requested-With": "XMLHttpRequest",
+//       },
+//       body: formData,
+//     })
+
+//     if (!response.ok) {
+//       throw new Error(`HTTP error! status: ${response.status}`)
+//     }
+
+//     const data = await response.json()
+//     return data.path || data.url || data.image_path
+//   } catch (error) {
+//     console.error("Error uploading image:", error)
 //     throw error
 //   }
 // }
@@ -222,6 +380,7 @@
 //   updateEvent,
 //   deleteEvent,
 //   fetchAllUsers,
+//   fetchUserById,
 //   createUser,
 //   updateUser,
 //   deleteUser,
@@ -230,13 +389,10 @@
 //   updateTicket,
 //   deleteTicket,
 //   fetchDashboardStats,
-//   fetchAllReviews,
-//   updateReview,
-//   deleteReview,
-//   fetchAllPayments,
-//   updatePayment,
 //   fetchCategories,
+//   uploadEventImage,
 // }
+
 
 import api from "./eventsApi"
 
@@ -263,32 +419,124 @@ export const fetchEventById = async (eventId) => {
   }
 }
 
+// First, let's fix the createEvent function to properly handle the authentication token
 export const createEvent = async (eventData) => {
-  // Ensure the data format matches the API requirements
-  const formattedData = {
-    ...eventData,
-    category_id: getCategoryId(eventData.category),
-  }
-
   try {
-    const response = await api.post("/events", formattedData)
-    return response.data
+    // Check if eventData is FormData (for image uploads)
+    if (eventData instanceof FormData) {
+      // Use the fetch API directly for FormData
+      const token = localStorage.getItem("token")
+
+      // Check if token exists
+      if (!token) {
+        throw new Error("Authentication token not found. Please log in again.")
+      }
+
+      const baseUrl = process.env.REACT_APP_API_URL || "http://127.0.0.1:8000/api"
+
+      console.log("Creating event with FormData to:", baseUrl)
+      console.log("Using token:", token ? "Token exists" : "Token missing")
+
+      // Log FormData contents for debugging
+      for (const pair of eventData.entries()) {
+        console.log(pair[0] + ": " + (pair[0] === "image_path" ? "File object" : pair[1]))
+      }
+
+      const response = await fetch(`${baseUrl}/events`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+          // Don't set Content-Type when sending FormData
+        },
+        body: eventData,
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        console.error("API error response:", errorData)
+        throw new Error(errorData.message || `HTTP error! status: ${response.status}`)
+      }
+
+      const responseData = await response.json()
+      console.log("API success response:", responseData)
+
+      // Handle the API response format which includes event in a nested property
+      return responseData.event || responseData
+    } else {
+      // Regular JSON data
+      const formattedData = {
+        ...eventData,
+        category_id: getCategoryId(eventData.category),
+      }
+
+      const response = await api.post("/events", formattedData)
+
+      // Handle the API response format which includes event in a nested property
+      return response.data.event || response.data
+    }
   } catch (error) {
     console.error("Error creating event:", error)
     throw error
   }
 }
 
+// Similarly, let's fix the updateEvent function
 export const updateEvent = async (eventId, eventData) => {
-  // Ensure the data format matches the API requirements
-  const formattedData = {
-    ...eventData,
-    category_id: getCategoryId(eventData.category),
-  }
-
   try {
-    const response = await api.put(`/events/${eventId}`, formattedData)
-    return response.data
+    // Check if eventData is FormData (for image uploads)
+    if (eventData instanceof FormData) {
+      // Use the fetch API directly for FormData
+      const token = localStorage.getItem("token")
+
+      // Check if token exists
+      if (!token) {
+        throw new Error("Authentication token not found. Please log in again.")
+      }
+
+      const baseUrl = process.env.REACT_APP_API_URL || "http://127.0.0.1:8000/api"
+
+      console.log(`Updating event ${eventId} with FormData`)
+      console.log("Using token:", token ? "Token exists" : "Token missing")
+
+      // Log FormData contents for debugging
+      for (const pair of eventData.entries()) {
+        console.log(pair[0] + ": " + (pair[0] === "image_path" ? "File object" : pair[1]))
+      }
+
+      const response = await fetch(`${baseUrl}/events/${eventId}`, {
+        method: "POST", // Use POST with _method=PUT for Laravel
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+          // Don't set Content-Type when sending FormData
+        },
+        body: eventData,
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        console.error("API error response:", errorData)
+        throw new Error(errorData.message || `HTTP error! status: ${response.status}`)
+      }
+
+      const responseData = await response.json()
+      console.log("API success response:", responseData)
+
+      // Handle the API response format which includes event in a nested property
+      return responseData.event || responseData
+    } else {
+      // Regular JSON data
+      const formattedData = {
+        ...eventData,
+        category_id: getCategoryId(eventData.category),
+      }
+
+      const response = await api.put(`/events/${eventId}`, formattedData)
+
+      // Handle the API response format which includes event in a nested property
+      return response.data.event || response.data
+    }
   } catch (error) {
     console.error(`Error updating event ${eventId}:`, error)
     throw error
@@ -307,11 +555,19 @@ export const deleteEvent = async (eventId) => {
 
 // Helper function to get category_id from category name
 function getCategoryId(categoryName) {
+  if (!categoryName) return 1
+
   const categoryMap = {
     concert: 1,
     theater: 2,
     sports: 3,
     conference: 4,
+    music: 1,
+    arts: 5,
+    technology: 6,
+    food: 7,
+    business: 8,
+    education: 9,
   }
   return categoryMap[categoryName.toLowerCase()] || 1
 }
@@ -483,11 +739,49 @@ export const fetchCategories = async () => {
     console.error("Error fetching categories:", error)
     // Fallback categories if API fails
     return [
-      { id: 1, name: "concert" },
+      { id: 1, name: "music" },
       { id: 2, name: "theater" },
       { id: 3, name: "sports" },
       { id: 4, name: "conference" },
+      { id: 5, name: "arts" },
+      { id: 6, name: "technology" },
+      { id: 7, name: "food" },
+      { id: 8, name: "business" },
+      { id: 9, name: "education" },
     ]
+  }
+}
+
+// Helper function to handle image uploads
+export const uploadEventImage = async (imageFile) => {
+  try {
+    const formData = new FormData()
+    formData.append("image", imageFile)
+
+    const token = localStorage.getItem("token")
+    const baseUrl = process.env.REACT_APP_API_URL
+      ? process.env.REACT_APP_API_URL.replace(/\/api\/?$/, "")
+      : "http://127.0.0.1:8000"
+
+    const response = await fetch(`${baseUrl}/api/upload-image`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: "application/json",
+        "X-Requested-With": "XMLHttpRequest",
+      },
+      body: formData,
+    })
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`)
+    }
+
+    const data = await response.json()
+    return data.path || data.url || data.image_path
+  } catch (error) {
+    console.error("Error uploading image:", error)
+    throw error
   }
 }
 
@@ -508,4 +802,5 @@ export default {
   deleteTicket,
   fetchDashboardStats,
   fetchCategories,
+  uploadEventImage,
 }

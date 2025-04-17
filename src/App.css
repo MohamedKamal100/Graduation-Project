@@ -154,8 +154,7 @@
 .dark .text-gray-500,
 .dark .bg-gray-50,
 .dark .bg-gray-200 {
-  transition: background-color 0.3s ease, color 0.3s ease,
-    border-color 0.3s ease;
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
 
 /* Hover effects */
@@ -165,8 +164,7 @@
 
 .hover-lift:hover {
   transform: translateY(-2px);
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
-    0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
 
 .hover-scale {
@@ -187,35 +185,19 @@
 
 /* Gradient backgrounds */
 .bg-gradient-primary {
-  background: linear-gradient(
-    135deg,
-    hsl(var(--primary)) 0%,
-    hsl(var(--accent)) 100%
-  );
+  background: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--accent)) 100%);
 }
 
 .bg-gradient-secondary {
-  background: linear-gradient(
-    135deg,
-    hsl(var(--secondary)) 0%,
-    hsl(var(--info)) 100%
-  );
+  background: linear-gradient(135deg, hsl(var(--secondary)) 0%, hsl(var(--info)) 100%);
 }
 
 .bg-gradient-success {
-  background: linear-gradient(
-    135deg,
-    hsl(var(--success)) 0%,
-    hsl(var(--info)) 100%
-  );
+  background: linear-gradient(135deg, hsl(var(--success)) 0%, hsl(var(--info)) 100%);
 }
 
 .bg-gradient-warning {
-  background: linear-gradient(
-    135deg,
-    hsl(var(--warning)) 0%,
-    hsl(var(--danger)) 100%
-  );
+  background: linear-gradient(135deg, hsl(var(--warning)) 0%, hsl(var(--danger)) 100%);
 }
 
 /* Truncate text with ellipsis */
@@ -320,13 +302,11 @@
 
 .card-hover:hover {
   transform: translateY(-5px);
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1),
-    0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
 }
 
 .dark .card-hover:hover {
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3),
-    0 10px 10px -5px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
 }
 
 /* Button animations */
@@ -578,8 +558,7 @@
 
 .hover-lift:hover {
   transform: translateY(-8px);
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
-    0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
 }
 
 .hover-scale {
@@ -709,12 +688,90 @@
 .clean-card {
   background-color: white;
   border-radius: 12px;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
-    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   transition: all 0.3s ease;
 }
 
 .clean-card:hover {
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
-    0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* Image animations and hover effects */
+.image-rounded {
+  border-radius: 0.75rem;
+  overflow: hidden;
+  transition: all 0.3s ease-in-out;
+}
+
+.image-rounded img {
+  transition: transform 0.5s ease-in-out;
+}
+
+.image-rounded:hover img {
+  transform: scale(1.05);
+}
+
+/* Ticket card animations */
+.ticket-card {
+  transition: all 0.3s ease-in-out;
+}
+
+.ticket-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* QR code animation */
+.qr-code-container {
+  transition: all 0.3s ease-in-out;
+}
+
+.qr-code-container:hover {
+  transform: scale(1.1);
+}
+
+/* Pulse animation for download button */
+@keyframes pulse-border {
+  0% {
+    box-shadow: 0 0 0 0 rgba(124, 58, 237, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(124, 58, 237, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(124, 58, 237, 0);
+  }
+}
+
+.download-button {
+  animation: pulse-border 2s infinite;
+}
+
+/* Ticket hover animation */
+.ticket-hover {
+  transition: all 0.3s ease;
+}
+
+.ticket-hover:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* Image loading animation */
+@keyframes image-loading {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.image-loading {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: image-loading 1.5s infinite;
 }

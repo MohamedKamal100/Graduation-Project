@@ -12,6 +12,8 @@ import {
   faDownload,
   faEnvelope,
   faArrowLeft,
+  faQrcode,
+  faPrint,
 } from "@fortawesome/free-solid-svg-icons"
 import { useEvents } from "../../context/EventsContext"
 import { useBooking } from "../../context/BookingContext"
@@ -283,6 +285,26 @@ const CheckoutConfirmation = () => {
                 >
                   <FontAwesomeIcon icon={faEnvelope} className="mr-2" />
                   Email Ticket to Me
+                </motion.button>
+
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => window.print()}
+                  className="w-full flex items-center justify-center px-4 py-3 bg-indigo-50 dark:bg-indigo-900/20 text-indigo-700 dark:text-indigo-300 rounded-lg hover:bg-indigo-100 dark:hover:bg-indigo-800/30 transition-colors duration-200"
+                >
+                  <FontAwesomeIcon icon={faPrint} className="mr-2" />
+                  Print Tickets
+                </motion.button>
+
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => alert("QR code would be displayed here")}
+                  className="w-full flex items-center justify-center px-4 py-3 bg-indigo-50 dark:bg-indigo-900/20 text-indigo-700 dark:text-indigo-300 rounded-lg hover:bg-indigo-100 dark:hover:bg-indigo-800/30 transition-colors duration-200"
+                >
+                  <FontAwesomeIcon icon={faQrcode} className="mr-2" />
+                  Show QR Code
                 </motion.button>
               </div>
 

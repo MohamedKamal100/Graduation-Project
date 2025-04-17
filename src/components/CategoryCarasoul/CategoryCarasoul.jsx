@@ -11,14 +11,17 @@ import { PulseLoader } from "react-spinners"
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa"
 import { FaBasketballBall, FaMusic, FaTheaterMasks, FaUsers, FaCalendarAlt } from "react-icons/fa"
 
-// استيراد الصور من الـ assets
+// Import the dedicated CSS file
+import "./CategoryCarasoul.css"
+
+// Import images from assets
 import sportsImage from "../../assets/sports.jpeg"
 import concertImage from "../../assets/concert.webp"
 import theaterImage from "../../assets/theatre.jpeg"
 import conferenceImage from "../../assets/conference.jpeg"
 import defaultImage from "../../assets/logo.jpeg"
 
-const CategoryCarasoul = () => {
+const CategoryCarousel = () => {
   const [categories, setCategories] = useState([])
   const [loading, setLoading] = useState(true)
   const API_URL = "http://127.0.0.1:8000/api/events"
@@ -39,7 +42,7 @@ const CategoryCarasoul = () => {
           name: category,
           image: getCategoryImage(category),
           icon: getCategoryIcon(category),
-          count: response.data.filter((event) => event.category === category).length,
+          count: response?.data?.filter((event) => event.category === category).length,
         }))
 
         setCategories(categoryList)
@@ -53,7 +56,7 @@ const CategoryCarasoul = () => {
     fetchEvents()
   }, [])
 
-  // دالة لإرجاع الصورة المناسبة من الـ assets
+  // Function to return the appropriate image from assets
   const getCategoryImage = (category) => {
     switch (category?.toLowerCase()) {
       case "sports":
@@ -69,7 +72,7 @@ const CategoryCarasoul = () => {
     }
   }
 
-  // دالة لإرجاع الأيقونة المناسبة لكل فئة
+  // Function to return the appropriate icon for each category
   const getCategoryIcon = (category) => {
     switch (category?.toLowerCase()) {
       case "sports":
@@ -89,13 +92,12 @@ const CategoryCarasoul = () => {
     navigate(`/events?category=${category.name}`)
   }
 
-  // الأسهم المخصصة للتنقل
+  // Custom arrows for navigation
   const CustomArrow = ({ onClick, direction }) => (
     <motion.div
       whileHover={{ scale: 1.1 }}
       whileTap={{ scale: 0.95 }}
-      className={`absolute top-1/2 transform -translate-y-1/2 z-10 bg-white p-3 rounded-full shadow-md cursor-pointer hover:bg-gray-100 ${direction === "left" ? "left-2" : "right-2"
-        }`}
+      className={`custom-arrow ${direction === "left" ? "left" : "right"}`}
       onClick={onClick}
     >
       {direction === "left" ? <FaArrowLeft /> : <FaArrowRight />}
@@ -152,7 +154,7 @@ const CategoryCarasoul = () => {
     customPaging: () => <div className="w-2 h-2 bg-gray-300 rounded-full hover:bg-purple-400 transition-colors"></div>,
   }
 
-  // Simple animation variants
+  // Animation variants
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -173,54 +175,60 @@ const CategoryCarasoul = () => {
 
   // Category colors for the circles
   const categoryColors = [
-    "bg-purple-100 text-purple-600",
-    "bg-blue-100 text-blue-600",
-    "bg-pink-100 text-pink-600",
-    "bg-green-100 text-green-600",
-    "bg-amber-100 text-amber-600",
-    "bg-red-100 text-red-600",
+    "category-color-1",
+    "category-color-2",
+    "category-color-3",
+    "category-color-4",
+    "category-color-5",
+    "category-color-6",
   ]
 
   return (
-    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <div className="category-carousel-container container mx-auto">
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
         viewport={{ once: true }}
-        className="flex justify-between items-center mb-6"
+        className="category-carousel-header"
       >
-        <h2 className="text-xl md:text-2xl font-bold text-gray-900">Browse by Category</h2>
-        <Link to="/events" className="text-purple-600 hover:text-purple-700 font-medium flex items-center">
+        <h2 className="category-carousel-title">Browse by Category</h2>
+        <Link to="/events" className="category-carousel-link">
           View All
           <FaArrowRight className="ml-1" />
         </Link>
       </motion.div>
 
       {loading ? (
-        <div className="flex justify-center items-center h-40">
+        <div className="category-loading">
           <PulseLoader color="#8B5CF6" size={15} />
         </div>
       ) : (
-        <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={containerVariants}>
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          variants={containerVariants}
+          className="category-carousel"
+        >
           <Slider {...settings}>
-            {categories.map((category, index) => {
+            {categories?.map((category, index) => {
               const colorClass = categoryColors[index % categoryColors.length]
               const Icon = category.icon
 
               return (
-                <motion.div key={category.id} variants={itemVariants} className="px-2 py-2">
-                  <div className="flex flex-col items-center">
+                <motion.div key={category.id} variants={itemVariants} className="category-fade-in">
+                  <div className="category-item">
                     <motion.div
                       whileHover={{ y: -5, boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)" }}
                       transition={{ type: "spring", stiffness: 300 }}
                       onClick={() => handleCategoryClick(category)}
-                      className={`relative flex items-center justify-center w-24 h-24 md:w-28 md:h-28 rounded-full cursor-pointer ${colorClass} mb-3`}
+                      className={`category-circle ${colorClass}`}
                     >
                       <Icon className="text-3xl md:text-4xl" />
                     </motion.div>
-                    <span className="text-sm font-medium text-center">{category.name}</span>
-                    <span className="text-xs text-gray-500 mt-1">{category.count} Events</span>
+                    <span className="category-name">{category?.name}</span>
+                    <span className="category-count">{category?.count} Events</span>
                   </div>
                 </motion.div>
               )
@@ -232,4 +240,4 @@ const CategoryCarasoul = () => {
   )
 }
 
-export default CategoryCarasoul
+export default CategoryCarousel

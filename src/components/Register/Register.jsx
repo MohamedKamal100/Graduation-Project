@@ -73,7 +73,7 @@ const Register = () => {
 
 
   return (
-    <div className="min-h-screen relative font-sans">
+    <div className="min-h-screen py-10 relative font-sans">
       {/* Full-screen fixed background image */}
       <div className="fixed inset-0 z-0">
         <img

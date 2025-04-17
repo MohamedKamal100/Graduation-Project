@@ -1,0 +1,87 @@
+/* Event image container styles */
+.event-image-container {
+  position: relative;
+  overflow: hidden;
+  height: 100%;
+  min-height: 400px;
+  background: linear-gradient(135deg, #f0f4ff, #e6f0ff);
+  border-radius: 0 0 0 80px;
+}
+
+.dark .event-image-container {
+  background: linear-gradient(135deg, #1f2937, #111827);
+}
+
+.event-image-wrapper {
+  width: 100%;
+  height: 100%;
+  transition: all 0.8s ease-in-out;
+  transform-origin: center;
+  border-radius: 0 0 0 80px;
+  overflow: hidden;
+}
+
+.event-image-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: all 0.8s ease-in-out;
+  transform-origin: center;
+}
+
+/* Hover animations */
+.event-image-wrapper.hovered {
+  transform: scale(1.05) rotate(2deg);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.event-image-wrapper.hovered img {
+  filter: brightness(1.1) contrast(1.1);
+}
+
+/* Animation keyframes */
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Media queries for responsive design */
+@media (max-width: 768px) {
+  .event-image-container {
+    min-height: 300px;
+    border-radius: 0;
+  }
+
+  .event-image-wrapper {
+    border-radius: 0;
+  }
+}

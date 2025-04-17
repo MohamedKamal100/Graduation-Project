@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback, useMemo } from "react"
 import { useParams, useNavigate, useLocation } from "react-router-dom"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import {
@@ -22,16 +22,36 @@ import {
   faPlus,
   faShield,
   faInfoCircle,
-  faShoppingCart, // Added import for faShoppingCart
+  faShoppingCart,
+  faLock,
 } from "@fortawesome/free-solid-svg-icons"
 import { useEvents } from "../../context/EventsContext"
 import { useToast } from "../../context/ToastContext"
 import { loadStripe } from "@stripe/stripe-js"
 import { Elements, CardElement, useStripe, useElements } from "@stripe/react-stripe-js"
 import { motion, AnimatePresence } from "framer-motion"
+import axios from "axios"
 
-// Initialize Stripe (replace with your publishable key)
-const stripePromise = loadStripe("pk_test_your_stripe_key")
+// Add this after the imports
+// Add a style tag for the price highlight animation
+const priceHighlightStyle = `
+@keyframes priceHighlight {
+  0% { background-color: rgba(99, 102, 241, 0); }
+  50% { background-color: rgba(99, 102, 241, 0.2); }
+  100% { background-color: rgba(99, 102, 241, 0); }
+}
+.price-update-highlight {
+  animation: priceHighlight 0.7s ease-in-out;
+  border-radius: 0.375rem;
+}
+`
+
+// Use the provided Stripe publishable key
+const STRIPE_PUBLISHABLE_KEY =
+  "pk_test_51REozIR8mYpvT1Bnu6uEyznJ6mSxZMWfcYzQAm3dwYlbSncfLmVSDbLqNkiFeSArUjdVQHPdZDebUR2Z28DlH8tb00eEIuFLWU"
+
+// Initialize Stripe with the provided key
+const stripePromise = loadStripe(STRIPE_PUBLISHABLE_KEY)
 
 // Payment Form Component
 const PaymentForm = ({ eventDetails, quantity, totalPrice, onSuccess, onCancel }) => {
@@ -49,6 +69,37 @@ const PaymentForm = ({ eventDetails, quantity, totalPrice, onSuccess, onCancel }
   const [errors, setErrors] = useState({})
   const [paymentError, setPaymentError] = useState("")
   const [cardComplete, setCardComplete] = useState(false)
+
+  // Add this at the beginning of the PaymentForm component
+  if (!stripe) {
+    return (
+      <div className="p-6 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg border border-yellow-200 dark:border-yellow-800">
+        <div className="flex items-start">
+          <FontAwesomeIcon icon={faExclamationTriangle} className="text-yellow-600 dark:text-yellow-400 mt-1 mr-3" />
+          <div>
+            <h4 className="text-lg font-semibold text-yellow-800 dark:text-yellow-300 mb-2">Stripe Not Configured</h4>
+            <p className="text-yellow-700 dark:text-yellow-400 mb-4">
+              Stripe is not properly configured. In a production environment, you would need to:
+            </p>
+            <ol className="list-decimal pl-5 space-y-2 text-yellow-700 dark:text-yellow-400">
+              <li>Create a Stripe account</li>
+              <li>Get your publishable key from the Stripe dashboard</li>
+              <li>Add it to your environment variables</li>
+            </ol>
+            <div className="mt-4">
+              <button
+                onClick={onCancel}
+                className="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 text-white rounded-md transition-colors"
+              >
+                <FontAwesomeIcon icon={faArrowLeft} className="mr-2" />
+                Go Back
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   const handleInputChange = (e) => {
     const { name, value } = e.target
@@ -95,63 +146,58 @@ const PaymentForm = ({ eventDetails, quantity, totalPrice, onSuccess, onCancel }
     setPaymentError("")
 
     try {
-      // 1. Create payment intent on your server
-      const response = await fetch("http://127.0.0.1:8000/api/create-payment-intent", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-        body: JSON.stringify({
-          amount: totalPrice * 100, // Convert to cents
-          event_id: eventDetails.id,
-          quantity: quantity,
-          customer_details: formData,
-        }),
-      })
+      // 1. Create a token with Stripe
+      const cardElement = elements.getElement(CardElement)
+      const { token, error } = await stripe.createToken(cardElement)
 
-      if (!response.ok) {
-        throw new Error("Failed to create payment intent")
+      if (error) {
+        throw new Error(error.message)
       }
 
-      const { clientSecret } = await response.json()
-
-      // 2. Confirm card payment
-      const result = await stripe.confirmCardPayment(clientSecret, {
-        payment_method: {
-          card: elements.getElement(CardElement),
-          billing_details: {
-            name: formData.name,
-            email: formData.email,
+      // 2. Send the token to your backend
+      const response = await axios.post(
+        "http://127.0.0.1:8000/api/charge",
+        {
+          event_id: eventDetails.id,
+          nu_of_tickets: quantity,
+          payment_method: "stripe",
+          payment_status: "pending",
+          token: token.id, // Use the token ID from Stripe
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
           },
         },
-      })
+      )
 
-      if (result.error) {
-        setPaymentError(result.error.message)
-        toast.error(result.error.message)
-      } else if (result.paymentIntent.status === "succeeded") {
+      if (response.data.message === "success") {
         // 3. Create ticket in your system
-        await fetch("http://127.0.0.1:8000/api/tickets", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-          body: JSON.stringify({
+        await axios.post(
+          "http://127.0.0.1:8000/api/tickets",
+          {
             user_id: localStorage.getItem("userId"),
             event_id: eventDetails.id,
             quantity: quantity,
             price: eventDetails.price,
             type: "regular",
             status: "booked",
-            payment_id: result.paymentIntent.id,
+            payment_id: response.data.charge.id,
             customer_details: formData,
-          }),
-        })
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+              "Content-Type": "application/json",
+            },
+          },
+        )
 
         toast.success("Payment successful! Your tickets have been booked.")
-        onSuccess(result.paymentIntent.id)
+        onSuccess(response.data.charge.id)
+      } else {
+        throw new Error("Payment processing failed")
       }
     } catch (error) {
       console.error("Payment error:", error)
@@ -183,7 +229,10 @@ const PaymentForm = ({ eventDetails, quantity, totalPrice, onSuccess, onCancel }
             </label>
             <div className="relative group">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <FontAwesomeIcon icon={faUser} className="text-gray-400 group-hover:text-indigo-500 transition-colors duration-200" />
+                <FontAwesomeIcon
+                  icon={faUser}
+                  className="text-gray-400 group-hover:text-indigo-500 transition-colors duration-200"
+                />
               </div>
               <input
                 type="text"
@@ -213,7 +262,10 @@ const PaymentForm = ({ eventDetails, quantity, totalPrice, onSuccess, onCancel }
             </label>
             <div className="relative group">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <FontAwesomeIcon icon={faEnvelope} className="text-gray-400 group-hover:text-indigo-500 transition-colors duration-200" />
+                <FontAwesomeIcon
+                  icon={faEnvelope}
+                  className="text-gray-400 group-hover:text-indigo-500 transition-colors duration-200"
+                />
               </div>
               <input
                 type="email"
@@ -243,7 +295,10 @@ const PaymentForm = ({ eventDetails, quantity, totalPrice, onSuccess, onCancel }
             </label>
             <div className="relative group">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <FontAwesomeIcon icon={faPhone} className="text-gray-400 group-hover:text-indigo-500 transition-colors duration-200" />
+                <FontAwesomeIcon
+                  icon={faPhone}
+                  className="text-gray-400 group-hover:text-indigo-500 transition-colors duration-200"
+                />
               </div>
               <input
                 type="tel"
@@ -273,7 +328,10 @@ const PaymentForm = ({ eventDetails, quantity, totalPrice, onSuccess, onCancel }
             </label>
             <div className="relative group">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <FontAwesomeIcon icon={faIdCard} className="text-gray-400 group-hover:text-indigo-500 transition-colors duration-200" />
+                <FontAwesomeIcon
+                  icon={faIdCard}
+                  className="text-gray-400 group-hover:text-indigo-500 transition-colors duration-200"
+                />
               </div>
               <input
                 type="text"
@@ -304,6 +362,19 @@ const PaymentForm = ({ eventDetails, quantity, totalPrice, onSuccess, onCancel }
           <FontAwesomeIcon icon={faCreditCard} className="mr-3 text-indigo-600 dark:text-indigo-400" />
           Payment Information
         </h3>
+
+        <div className="bg-indigo-50 dark:bg-indigo-900/20 rounded-lg p-4 mb-4">
+          <div className="flex items-start">
+            <FontAwesomeIcon icon={faLock} className="text-indigo-600 dark:text-indigo-400 mt-1 mr-3" />
+            <div>
+              <h4 className="text-sm font-semibold text-indigo-800 dark:text-indigo-300 mb-1">Test Card Information</h4>
+              <p className="text-xs text-indigo-700 dark:text-indigo-400">
+                Use card number: 4242 4242 4242 4242, any future date, any 3 digits for CVC, and any 5 digits for postal
+                code.
+              </p>
+            </div>
+          </div>
+        </div>
 
         <div>
           <label htmlFor="card" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
@@ -404,8 +475,27 @@ const Checkout = () => {
   const [step, setStep] = useState("details") // "details", "payment", "confirmation"
   const [paymentId, setPaymentId] = useState(null)
   const [isChangingQuantity, setIsChangingQuantity] = useState(false)
+  const [priceHighlightStyleAdded, setPriceHighlightStyleAdded] = useState(false)
 
-  useEffect(() => {
+  // Calculate total price with proper type checking
+  const calculateTotalPrice = (event, quantity = 1) => {
+    if (!event) return 0
+
+    // Handle different price formats (string or number)
+    let price = 0
+    if (typeof event.price === "number") {
+      price = event.price
+    } else if (typeof event.price === "string" && !isNaN(Number.parseFloat(event.price))) {
+      price = Number.parseFloat(event.price)
+    }
+
+    // Ensure quantity is a valid number
+    const validQuantity = typeof quantity === "number" && quantity > 0 ? quantity : 1
+
+    return price * validQuantity
+  }
+
+  const loadEventData = useCallback(async () => {
     setLoading(true)
     setError(null)
 
@@ -431,19 +521,48 @@ const Checkout = () => {
     }
   }, [id, getEventById, state])
 
-  const totalPrice = event && typeof event.price === "number" ? event.price * quantity : 0
-  const serviceFee = totalPrice * 0.05 // 5% service fee
-  const finalTotal = totalPrice + serviceFee
+  useEffect(() => {
+    loadEventData()
+  }, [loadEventData])
+
+  // Add style tag to the DOM
+  useEffect(() => {
+    const styleElement = document.createElement("style")
+    styleElement.innerHTML = priceHighlightStyle
+    document.head.appendChild(styleElement)
+
+    return () => {
+      document.head.removeChild(styleElement)
+    }
+  }, []) // Empty dependency array so it only runs once
+
+  const { totalPrice, serviceFee, finalTotal } = useMemo(() => {
+    const calculatedPrice = event ? calculateTotalPrice(event, quantity) : 0
+    const calculatedFee = calculatedPrice * 0.05 // 5% service fee
+    return {
+      totalPrice: calculatedPrice,
+      serviceFee: calculatedFee,
+      finalTotal: calculatedPrice + calculatedFee,
+    }
+  }, [event, quantity])
 
   const handleQuantityChange = (newQuantity) => {
     setIsChangingQuantity(true)
     if (newQuantity < 1) newQuantity = 1
-    if (event && newQuantity > event.available_tickets) {
+    if (event && event.available_tickets && newQuantity > event.available_tickets) {
       newQuantity = event.available_tickets
       toast.warning(`Maximum available tickets: ${event.available_tickets}`)
     }
     setTimeout(() => {
       setQuantity(newQuantity)
+      // Add a subtle highlight effect to the price
+      const priceElement = document.getElementById("total-price")
+      if (priceElement) {
+        priceElement.classList.add("price-update-highlight")
+        setTimeout(() => {
+          priceElement.classList.remove("price-update-highlight")
+        }, 700)
+      }
       setIsChangingQuantity(false)
     }, 150)
   }
@@ -492,7 +611,8 @@ const Checkout = () => {
             </div>
             <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-3">Event Not Found</h2>
             <p className="text-gray-600 dark:text-gray-400 mb-8 text-center max-w-md">
-              {error || "The event you're looking for could not be found. It may have been removed or the link is incorrect."}
+              {error ||
+                "The event you're looking for could not be found. It may have been removed or the link is incorrect."}
             </p>
             <motion.button
               whileHover={{ scale: 1.05 }}
@@ -578,7 +698,7 @@ const Checkout = () => {
                 <div>
                   <div className="relative h-48 md:h-64 overflow-hidden">
                     <img
-                      src={event.image || "/placeholder.svg?height=400&width=800"}
+                      src={event.image_path || event.image || "/placeholder.svg?height=400&width=800"}
                       alt={event.name}
                       className="w-full h-full object-cover transform hover:scale-105 transition-transform duration-700"
                     />
@@ -621,14 +741,20 @@ const Checkout = () => {
                             </div>
                           </div>
                           <div className="flex items-center p-3 bg-indigo-50 dark:bg-indigo-900/20 rounded-lg">
-                            <FontAwesomeIcon icon={faClock} className="w-5 h-5 mr-3 text-indigo-600 dark:text-indigo-400" />
+                            <FontAwesomeIcon
+                              icon={faClock}
+                              className="w-5 h-5 mr-3 text-indigo-600 dark:text-indigo-400"
+                            />
                             <div>
                               <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300">Duration</h4>
                               <p className="text-gray-900 dark:text-white font-medium">3 hours</p>
                             </div>
                           </div>
                           <div className="flex items-center p-3 bg-indigo-50 dark:bg-indigo-900/20 rounded-lg">
-                            <FontAwesomeIcon icon={faTag} className="w-5 h-5 mr-3 text-indigo-600 dark:text-indigo-400" />
+                            <FontAwesomeIcon
+                              icon={faTag}
+                              className="w-5 h-5 mr-3 text-indigo-600 dark:text-indigo-400"
+                            />
                             <div>
                               <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300">Price</h4>
                               <p className="text-gray-900 dark:text-white font-medium">
@@ -848,9 +974,18 @@ const Checkout = () => {
                     </div>
                     <div className="flex justify-between items-center mt-2">
                       <span className="text-gray-600 dark:text-gray-300">Subtotal:</span>
-                      <span className="font-medium text-gray-900 dark:text-white">
-                        ${typeof totalPrice === "number" ? totalPrice.toFixed(2) : "0.00"}
-                      </span>
+                      <AnimatePresence mode="wait">
+                        <motion.span
+                          key={`subtotal-${quantity}`}
+                          initial={{ opacity: 0, scale: 0.8 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          exit={{ opacity: 0, scale: 0.8 }}
+                          transition={{ duration: 0.3 }}
+                          className="font-medium text-gray-900 dark:text-white"
+                        >
+                          ${typeof totalPrice === "number" ? totalPrice.toFixed(2) : "0.00"}
+                        </motion.span>
+                      </AnimatePresence>
                     </div>
                     <div className="flex justify-between items-center mt-2">
                       <span className="text-gray-600 dark:text-gray-300 flex items-center">
@@ -862,9 +997,18 @@ const Checkout = () => {
                           </span>
                         </span>
                       </span>
-                      <span className="font-medium text-gray-900 dark:text-white">
-                        ${typeof serviceFee === "number" ? serviceFee.toFixed(2) : "0.00"}
-                      </span>
+                      <AnimatePresence mode="wait">
+                        <motion.span
+                          key={`fee-${quantity}`}
+                          initial={{ opacity: 0, scale: 0.8 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          exit={{ opacity: 0, scale: 0.8 }}
+                          transition={{ duration: 0.3 }}
+                          className="font-medium text-gray-900 dark:text-white"
+                        >
+                          ${typeof serviceFee === "number" ? serviceFee.toFixed(2) : "0.00"}
+                        </motion.span>
+                      </AnimatePresence>
                     </div>
                   </motion.div>
                 </AnimatePresence>
@@ -875,6 +1019,7 @@ const Checkout = () => {
                   <span className="text-lg font-semibold text-gray-900 dark:text-white">Total:</span>
                   <AnimatePresence mode="wait">
                     <motion.span
+                      id="total-price"
                       key={`total-${quantity}`}
                       initial={{ opacity: 0, scale: 0.8 }}
                       animate={{ opacity: 1, scale: 1 }}
@@ -907,7 +1052,10 @@ const Checkout = () => {
                   <span>{event.date}</span>
                 </div>
                 <div className="flex items-center text-sm text-gray-600 dark:text-gray-300 bg-gray-50 dark:bg-gray-700/50 p-3 rounded-lg">
-                  <FontAwesomeIcon icon={faMapMarkerAlt} className="w-4 h-4 mr-3 text-indigo-600 dark:text-indigo-400" />
+                  <FontAwesomeIcon
+                    icon={faMapMarkerAlt}
+                    className="w-4 h-4 mr-3 text-indigo-600 dark:text-indigo-400"
+                  />
                   <span>{event.location}</span>
                 </div>
               </div>

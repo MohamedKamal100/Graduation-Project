@@ -208,7 +208,7 @@ export const EventsProvider = ({ children }) => {
       filtered = filtered.filter((event) => event.location === location)
     }
 
-    // تطبيق فلتر التاريخ
+    // ت��بيق فلتر التاريخ
     if (dateFilter) {
       const today = new Date()
       const nextWeek = new Date()

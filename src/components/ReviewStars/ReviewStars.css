@@ -1,0 +1,135 @@
+/* ReviewStars Styles */
+.review-stars {
+  --star-color-inactive: #d1d5db;
+  --star-color-active: #facc15; /* Yellow color for active stars */
+  --star-color-hover: #fbbf24;
+  --star-shadow: 0 0 5px rgba(250, 204, 21, 0.5);
+  --animation-duration: 0.3s;
+}
+
+.review-stars-container {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.review-star {
+  cursor: pointer;
+  transition: transform var(--animation-duration)
+      cubic-bezier(0.175, 0.885, 0.32, 1.275),
+    color var(--animation-duration) ease;
+  position: relative;
+}
+
+.review-star:hover {
+  transform: scale(1.2);
+}
+
+.review-star.active {
+  color: #facc15 !important; /* Force yellow color for active stars */
+  filter: drop-shadow(var(--star-shadow));
+}
+
+.review-star.inactive {
+  color: var(--star-color-inactive);
+}
+
+.review-star:hover {
+  color: var(--star-color-hover);
+}
+
+.review-count {
+  font-size: 0.75rem;
+  color: #6b7280;
+  margin-left: 0.25rem;
+}
+
+.dark .review-count {
+  color: #9ca3af;
+}
+
+/* Animation for star selection */
+@keyframes starPop {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.5);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.star-pop {
+  animation: starPop var(--animation-duration)
+    cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* Loading state */
+.review-star-loading {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.review-star-spinner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: var(--star-color-active);
+}
+
+/* Tooltip */
+.review-tooltip {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #1f2937;
+  color: white;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  font-size: 0.75rem;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
+  z-index: 10;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  pointer-events: none;
+}
+
+.review-tooltip::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 4px;
+  border-style: solid;
+  border-color: #1f2937 transparent transparent transparent;
+}
+
+.review-star:hover .review-tooltip {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Success animation */
+@keyframes successPulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(250, 204, 21, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(250, 204, 21, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(250, 204, 21, 0);
+  }
+}
+
+.review-success {
+  animation: successPulse 1s ease-out;
+}

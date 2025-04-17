@@ -4,7 +4,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import {
   faHeart as faHeartSolid,
   faTicketAlt,
-  faChevronRight,
   faCalendarAlt,
   faMapMarkerAlt,
   faUsers,
@@ -14,7 +13,10 @@ import {
 import { faHeart as faHeartRegular, faStar as faStarRegular } from "@fortawesome/free-regular-svg-icons"
 import { useWishlist } from "../../context/WishlistContext"
 import { useToast } from "../../context/ToastContext"
-import { useState } from "react"
+import { useState, useEffect } from "react"
+
+// Import the dedicated CSS file
+import "./EventCard.css"
 
 export function EventCard({ event }) {
   const { isInWishlist, getBookmarkIdByEventId, toggleWishlist } = useWishlist()
@@ -22,9 +24,25 @@ export function EventCard({ event }) {
   const toast = useToast()
   const [isHeartAnimating, setIsHeartAnimating] = useState(false)
   const [isBookmarkLoading, setIsBookmarkLoading] = useState(false)
+  const [imageLoaded, setImageLoaded] = useState(false)
+  const [imageError, setImageError] = useState(false)
 
   const isLoved = isInWishlist(event.id)
   const bookmarkId = getBookmarkIdByEventId(event.id)
+
+  // Handle image loading
+  useEffect(() => {
+    const img = new Image()
+    img.src = event.image_path || event.image || "/placeholder.svg"
+    img.onload = () => setImageLoaded(true)
+    img.onerror = () => setImageError(true)
+  }, [event.image_path, event.image])
+
+  // Get image source with fallback
+  const getImageSource = () => {
+    if (imageError) return "/placeholder.svg"
+    return event.image_path || event.image || "/placeholder.svg"
+  }
 
   const handleLoveClick = async (e) => {
     e.stopPropagation()
@@ -44,16 +62,13 @@ export function EventCard({ event }) {
     }, 600)
   }
 
-  const handleShowMore = () => {
+  const handleCardClick = () => {
     navigate(`/eventDetails/${event.id}`)
   }
 
-  // Update the handleBooking function to navigate to event details
   const handleBooking = (e) => {
     e.preventDefault()
     e.stopPropagation()
-
-    // Navigate to event details
     navigate(`/eventDetails/${event.id}`)
   }
 
@@ -85,102 +100,131 @@ export function EventCard({ event }) {
     }
 
     return (
-      <div className="flex items-center">
-        <div className="flex mr-1">{stars}</div>
-        <span className="text-xs text-gray-500 dark:text-gray-400">({rating.toFixed(1)})</span>
+      <div className="event-rating">
+        <div className="event-rating-stars">{stars}</div>
+        <span className="event-rating-value">({rating.toFixed(1)})</span>
       </div>
     )
   }
 
-  return (
-    <div className="relative group overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 bg-white dark:bg-gray-800 hover-lift">
-      <div className="relative h-52 overflow-hidden">
-        <img
-          src={event.image || "/placeholder.svg"}
-          alt={event.name}
-          className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-80" />
+  // Format date for better display
+  const formatDate = (dateString) => {
+    try {
+      const date = new Date(dateString)
+      if (isNaN(date.getTime())) {
+        return dateString // Return original if not valid date
+      }
+      return new Intl.DateTimeFormat("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      }).format(date)
+    } catch (e) {
+      return dateString
+    }
+  }
 
-        {event.category && (
-          <span className="absolute top-3 left-3 bg-blue-600 text-white text-xs font-semibold px-2.5 py-1 rounded">
-            {event.category}
-          </span>
+  return (
+    <div className="event-card" onClick={handleCardClick}>
+      {/* Image Container */}
+      <div className="event-image-container">
+        {!imageLoaded && !imageError ? (
+          <div className="image-placeholder"></div>
+        ) : (
+          <img
+            src={getImageSource() || "/placeholder.svg"}
+            alt={event.name}
+            className="event-image"
+            onError={(e) => {
+              e.target.onerror = null
+              e.target.src = "/placeholder.svg"
+              setImageError(true)
+            }}
+          />
         )}
 
-        <button
-          className={`absolute top-3 right-3 p-2 rounded-full bg-white/90 dark:bg-gray-700/90 hover:bg-white dark:hover:bg-gray-700 transition-colors ${isLoved ? "text-red-500" : "text-gray-700 dark:text-gray-300"} ${isBookmarkLoading ? "opacity-80 cursor-wait" : ""} ${isHeartAnimating ? "heart-animation" : ""}`}
-          onClick={handleLoveClick}
-          disabled={isBookmarkLoading}
-          aria-label={isLoved ? "Remove from favorites" : "Add to favorites"}
-        >
-          {isBookmarkLoading ? (
-            <FontAwesomeIcon icon={faSpinner} spin className="w-5 h-5" />
-          ) : (
-            <FontAwesomeIcon
-              icon={isLoved ? faHeartSolid : faHeartRegular}
-              className={`w-5 h-5 ${isHeartAnimating ? (isLoved ? "heart-pop-out" : "heart-pop-in") : ""}`}
-            />
-          )}
-        </button>
+        {/* Overlay with category and wishlist */}
+        <div className="event-image-overlay">
+          {event.category && <span className="event-category-badge">{event.category}</span>}
+
+          <button
+            className={`event-wishlist-button ${isLoved ? "active" : ""} ${isHeartAnimating ? "heart-animation" : ""}`}
+            onClick={handleLoveClick}
+            disabled={isBookmarkLoading}
+            aria-label={isLoved ? "Remove from favorites" : "Add to favorites"}
+          >
+            {isBookmarkLoading ? (
+              <FontAwesomeIcon icon={faSpinner} spin className="w-4 h-4" />
+            ) : (
+              <FontAwesomeIcon
+                icon={isLoved ? faHeartSolid : faHeartRegular}
+                className={`w-4 h-4 ${isHeartAnimating ? (isLoved ? "heart-pop-out" : "heart-pop-in") : ""}`}
+              />
+            )}
+          </button>
+        </div>
+
+        {/* Date badge */}
+        <div className="event-date-badge">
+          <div className="event-date">
+            <FontAwesomeIcon icon={faCalendarAlt} className="event-date-icon" />
+            {formatDate(event.date)}
+          </div>
+        </div>
       </div>
 
-      <div className="p-4">
-        <div className="flex justify-between items-start mb-2">
-          <h3 className="text-xl font-semibold text-gray-900 dark:text-white truncate">{event.name}</h3>
+      {/* Content Container */}
+      <div className="event-content">
+        {/* Price and Rating */}
+        <div className="event-price-rating">
           {event.price && (
-            <span className="bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300 text-xs font-semibold px-2.5 py-1 rounded">
-              {typeof event.price === "number" ? `$${event.price}` : event.price}
-            </span>
+            <div className="event-price">
+              ${typeof event.price === "number" ? event.price.toFixed(2) : Number.parseFloat(event.price).toFixed(2)}
+            </div>
           )}
+
+          {event.rating > 0 && renderRating(event.rating)}
         </div>
 
-        <p className="text-sm text-gray-600 dark:text-gray-300 line-clamp-2 mb-3">{event.description}</p>
+        {/* Title */}
+        <h3 className="event-title">{event.name}</h3>
 
-        <div className="space-y-2 mb-4">
-          <div className="flex items-center text-sm text-gray-600 dark:text-gray-300">
-            <FontAwesomeIcon icon={faCalendarAlt} className="w-4 h-4 mr-2 text-blue-600 dark:text-blue-400" />
-            <span>{event.date}</span>
+        {/* Description */}
+        <p className="event-description">{event.description}</p>
+
+        {/* Event Details */}
+        <div className="event-details">
+          <div className="event-location">
+            <FontAwesomeIcon icon={faMapMarkerAlt} className="event-detail-icon" />
+            <span className="event-location-text">{event.location}</span>
           </div>
-          <div className="flex items-center text-sm text-gray-600 dark:text-gray-300">
-            <FontAwesomeIcon icon={faMapMarkerAlt} className="w-4 h-4 mr-2 text-blue-600 dark:text-blue-400" />
-            <span>{event.location}</span>
-          </div>
-          <div className="flex items-center text-sm text-gray-600 dark:text-gray-300">
-            <FontAwesomeIcon icon={faUsers} className="w-4 h-4 mr-2 text-blue-600 dark:text-blue-400" />
-            <span className="flex-1">
+
+          <div className="event-tickets">
+            <FontAwesomeIcon icon={faUsers} className="event-detail-icon" />
+            <span>
               {event.available_tickets} / {event.capacity} tickets
             </span>
-            <div className="w-16 bg-gray-200 dark:bg-gray-700 rounded-full h-1.5">
-              <div
-                className={`h-1.5 rounded-full ${ticketPercentage <= 20 ? "bg-red-500" : ticketPercentage <= 50 ? "bg-yellow-500" : "bg-green-500"}`}
-                style={{ width: `${ticketPercentage}%` }}
-              ></div>
-            </div>
           </div>
-
-          {/* Rating display */}
-          {event.rating > 0 && <div className="flex items-center text-sm">{renderRating(event.rating)}</div>}
         </div>
 
-        <div className="flex justify-between pt-2">
-          <button
-            onClick={handleShowMore}
-            className="flex items-center px-3 py-1.5 text-sm bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 rounded-lg transition-colors"
-          >
-            <span>Details</span>
-            <FontAwesomeIcon icon={faChevronRight} className="w-3.5 h-3.5 ml-1" />
-          </button>
-
-          <button
-            onClick={handleBooking}
-            disabled={event.available_tickets <= 0}
-            className="flex items-center px-4 py-1.5 text-sm bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800 text-white rounded-lg transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
-          >
-            <FontAwesomeIcon icon={faTicketAlt} className="w-4 h-4 mr-1.5" />
-            <span>{event.available_tickets > 0 ? "Book Now" : "Sold Out"}</span>
-          </button>
+        {/* Ticket Availability Bar */}
+        <div className="ticket-bar-container">
+          <div
+            className={`ticket-bar-progress ${ticketPercentage <= 20
+              ? "ticket-bar-low"
+              : ticketPercentage <= 50
+                ? "ticket-bar-medium"
+                : "ticket-bar-high"
+              }`}
+            style={{ width: `${ticketPercentage}%` }}
+          ></div>
         </div>
+
+        {/* Book Now Button */}
+        <button onClick={handleBooking} disabled={event.available_tickets <= 0} className="book-button">
+          <FontAwesomeIcon icon={faTicketAlt} className="book-button-icon" />
+          <span>{event.available_tickets > 0 ? "Book Now" : "Sold Out"}</span>
+        </button>
       </div>
     </div>
   )

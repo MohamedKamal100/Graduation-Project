@@ -430,8 +430,8 @@ const UsersManagement = () => {
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span
                         className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${user.role === "admin"
-                            ? "bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300"
-                            : "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300"
+                          ? "bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300"
+                          : "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300"
                           } transition-all duration-200 group-hover:shadow-md`}
                       >
                         {user.role || "customer"}
@@ -464,8 +464,8 @@ const UsersManagement = () => {
                         <button
                           onClick={() => handleToggleRole(user)}
                           className={`${user.role === "admin"
-                              ? "text-purple-600 hover:text-purple-900 dark:text-purple-400 dark:hover:text-purple-300"
-                              : "text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300"
+                            ? "text-purple-600 hover:text-purple-900 dark:text-purple-400 dark:hover:text-purple-300"
+                            : "text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300"
                             } transition-colors duration-200 transform hover:scale-110`}
                           title={user.role === "admin" ? "Make Customer" : "Make Admin"}
                         >
@@ -522,8 +522,8 @@ const UsersManagement = () => {
                   key={pageNum}
                   onClick={() => paginate(pageNum)}
                   className={`px-3 py-1 border ${currentPage === pageNum
-                      ? "border-blue-500 bg-blue-50 text-blue-600 dark:border-blue-400 dark:bg-blue-900/20 dark:text-blue-400"
-                      : "border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700"
+                    ? "border-blue-500 bg-blue-50 text-blue-600 dark:border-blue-400 dark:bg-blue-900/20 dark:text-blue-400"
+                    : "border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700"
                     } rounded-md transition-colors duration-200`}
                 >
                   {pageNum}

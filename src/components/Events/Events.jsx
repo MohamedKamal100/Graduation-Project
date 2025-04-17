@@ -1,149 +1,31 @@
-// import React, { useEffect, useState } from "react";
-// import { useLocation, useNavigate } from "react-router-dom";
-// import axios from "axios";
-
-// import { PulseLoader } from "react-spinners";
-
-// // استيراد الصور من الـ assets
-// import sportsImage from "../../assets/sports.jpeg";
-// import concertImage from "../../assets/concert.webp";
-// import theaterImage from "../../assets/theatre.jpeg";
-// import conferenceImage from "../../assets/conference.jpeg";
-// import defaultImage from "../../assets/logo.jpeg";
-// import EventCard from "../EventCard/EventCard";
-
-// const Events = () => {
-//   const [events, setEvents] = useState([]);
-//   const [loading, setLoading] = useState(true);
-//   const location = useLocation();
-//   const navigate = useNavigate();
-//   const queryParams = new URLSearchParams(location.search);
-//   const category = queryParams.get("category");
-
-//   // دالة لإرجاع صورة تعبر عن الفئة
-//   const getCategoryImage = (category) => {
-//     if (!category) return defaultImage; // إذا category مش موجودة، نرجع الصورة الافتراضية
-
-//     switch (category.toLowerCase()) {
-//       case "sports":
-//         return sportsImage;
-//       case "concert":
-//         return concertImage;
-//       case "theater":
-//         return theaterImage;
-//       case "conference":
-//         return conferenceImage;
-//       default:
-//         return defaultImage; // إذا الكاتجوري مش معروفة، نرجع الصورة الافتراضية
-//     }
-//   };
-
-//   useEffect(() => {
-//     const fetchEvents = async () => {
-//       try {
-//         const response = await axios.get(`http://127.0.0.1:8000/api/events`, {
-//           headers: {
-//             Authorization: `Bearer ${localStorage.getItem("token")}`,
-//           },
-//         });
-
-//         // فلترة الأحداث بناءً على الفئة إذا كانت موجودة
-//         const filteredEvents = category
-//           ? response?.data?.filter((event) => {
-//             // تأكد من أن event.category موجودة قبل استخدام toLowerCase
-//             if (event.category) {
-//               return event.category.toLowerCase() === category.toLowerCase();
-//             }
-//             return false; // إذا event.category مش موجودة، نرجع false
-//           })
-//           : response?.data;
-
-//         // إضافة الصور المناسبة لكل حدث
-//         const eventsWithImages = filteredEvents.map((event) => ({
-//           ...event,
-//           image: getCategoryImage(event.category),
-//         }));
-
-//         setEvents(eventsWithImages);
-//         setLoading(false);
-//       } catch (error) {
-//         console.error("❌ Error fetching events:", error.response?.data || error.message);
-//         setLoading(false);
-//       }
-//     };
-
-//     fetchEvents();
-//   }, [category]);
-
-//   // دالة لتحديد إذا كان الحدث مفضلًا
-//   const handleLoveClick = (eventId) => {
-//     console.log("Loved Event ID:", eventId);
-//     // هنا يمكنك إضافة منطق لحفظ الحدث كـ "مفضل"
-//   };
-
-//   // دالة لحجز التذكرة
-//   const handleBookingClick = (eventId) => {
-//     console.log("Booking Event ID:", eventId);
-//     // هنا يمكنك إضافة منطق لحجز التذكرة
-//   };
-
-//   // دالة للانتقال إلى صفحة تفاصيل الحدث
-//   const handleShowMore = (eventId) => {
-//     navigate(`/eventDetails/${eventId}`);
-//   };
-
-//   return (
-//     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12 dark:bg-gray-900 dark:text-white">
-//       <h2 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-8">
-//         {category ? `Events in ${category}` : "All Events"}
-//       </h2>
-//       {loading ? (
-//         <p className="text-center text-gray-500 dark:text-gray-400">Loading events...</p>
-//       ) : (
-//         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-//           {events.map((event) => (
-//             <EventCard
-//               key={event.id}
-//               event={event}
-//               onLoveClick={handleLoveClick}
-//               onBookingClick={handleBookingClick}
-//               onShowMore={handleShowMore}
-//             />
-//           ))}
-//         </div>
-//       )}
-//     </div>
-//   );
-// };
-
-// export default Events;
-
-
-
 // "use client"
 
-// import { useEffect, useState } from "react"
+// import { useState, useEffect } from "react"
 // import { useLocation, useNavigate } from "react-router-dom"
-// import axios from "axios"
 // import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-// import { faSearch, faFilter, faTimes, faSpinner } from "@fortawesome/free-solid-svg-icons"
+// import {
+//   faSearch,
+//   faFilter,
+//   faTimes,
+//   faSpinner,
+//   faCalendarAlt,
+//   faMapMarkerAlt,
+//   faSortAmountDown,
+//   faTicketAlt,
+//   faChevronDown,
+//   faChevronUp,
+// } from "@fortawesome/free-solid-svg-icons"
 // import { EventCard } from "../EventCard/EventCard"
-
-// // Import category images
-// import sportsImage from "../../assets/sports.jpeg"
-// import concertImage from "../../assets/concert.webp"
-// import theaterImage from "../../assets/theatre.jpeg"
-// import conferenceImage from "../../assets/conference.jpeg"
-// import defaultImage from "../../assets/logo.jpeg"
+// import { useEvents } from "../../context/EventsContext"
+// import defaultImage from "../../assets/logo.jpeg" // Import default image
 
 // const Events = () => {
-//   const [events, setEvents] = useState([])
-//   const [filteredEvents, setFilteredEvents] = useState([])
-//   const [loading, setLoading] = useState(true)
-//   const [error, setError] = useState(null)
 //   const location = useLocation()
 //   const navigate = useNavigate()
 //   const queryParams = new URLSearchParams(location.search)
+
+//   // Get data from context
+//   const { loading, error, filterEvents, getLocations } = useEvents()
 
 //   // Search and filter states
 //   const [searchTerm, setSearchTerm] = useState("")
@@ -151,139 +33,24 @@
 //   const [selectedLocation, setSelectedLocation] = useState("")
 //   const [dateFilter, setDateFilter] = useState("")
 //   const [sortBy, setSortBy] = useState("date")
-//   const [locations, setLocations] = useState([])
 //   const [showFilters, setShowFilters] = useState(false)
+//   const [filteredEvents, setFilteredEvents] = useState([])
+//   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false)
 
-//   // Function to get category image
-//   const getCategoryImage = (category) => {
-//     if (!category) return defaultImage
+//   // Get locations for filter dropdown
+//   const locations = getLocations()
 
-//     switch (category.toLowerCase()) {
-//       case "sports":
-//         return sportsImage
-//       case "concert":
-//         return concertImage
-//       case "theater":
-//         return theaterImage
-//       case "conference":
-//         return conferenceImage
-//       default:
-//         return defaultImage
-//     }
-//   }
-
+//   // Apply filters whenever filter criteria change
 //   useEffect(() => {
-//     const fetchEvents = async () => {
-//       setLoading(true)
-//       setError(null)
-
-//       try {
-//         const response = await axios.get(`http://127.0.0.1:8000/api/events`, {
-//           headers: {
-//             Authorization: `Bearer ${localStorage.getItem("token")}`,
-//           },
-//         })
-
-//         // Add appropriate images and format data for each event
-//         const eventsWithImages = response.data.map((event) => ({
-//           ...event,
-//           image: getCategoryImage(event.category),
-//           category: event.category || "Other",
-//           // Format date if needed
-//           date: event.date || "TBA",
-//           // Add any other formatting needed
-//         }))
-
-//         setEvents(eventsWithImages)
-
-//         // Extract unique locations for filter dropdown
-//         const uniqueLocations = [...new Set(eventsWithImages.map((event) => event.location).filter(Boolean))]
-//         setLocations(uniqueLocations)
-
-//         // Apply initial filters if any
-//         applyFilters(eventsWithImages)
-//       } catch (error) {
-//         console.error("❌ Error fetching events:", error.response?.data || error.message)
-//         setError("Failed to load events. Please try again later.")
-//       } finally {
-//         setLoading(false)
-//       }
-//     }
-
-//     fetchEvents()
-//   }, [])
-
-//   // Apply all filters whenever filter criteria change
-//   useEffect(() => {
-//     applyFilters(events)
-//   }, [searchTerm, selectedCategory, selectedLocation, dateFilter, sortBy])
-
-//   // Function to apply all filters
-//   const applyFilters = (eventsToFilter) => {
-//     if (!eventsToFilter || eventsToFilter.length === 0) return
-
-//     let filtered = [...eventsToFilter]
-
-//     // Apply search filter
-//     if (searchTerm) {
-//       const term = searchTerm.toLowerCase()
-//       filtered = filtered.filter(
-//         (event) => event.name?.toLowerCase().includes(term) || event.description?.toLowerCase().includes(term),
-//       )
-//     }
-
-//     // Apply category filter
-//     if (selectedCategory) {
-//       filtered = filtered.filter((event) => event.category?.toLowerCase() === selectedCategory.toLowerCase())
-//     }
-
-//     // Apply location filter
-//     if (selectedLocation) {
-//       filtered = filtered.filter((event) => event.location === selectedLocation)
-//     }
-
-//     // Apply date filter
-//     if (dateFilter) {
-//       const today = new Date()
-//       const nextWeek = new Date()
-//       nextWeek.setDate(today.getDate() + 7)
-//       const nextMonth = new Date()
-//       nextMonth.setMonth(today.getMonth() + 1)
-
-//       filtered = filtered.filter((event) => {
-//         const eventDate = new Date(event.date)
-
-//         switch (dateFilter) {
-//           case "today":
-//             return eventDate.toDateString() === today.toDateString()
-//           case "thisWeek":
-//             return eventDate >= today && eventDate <= nextWeek
-//           case "thisMonth":
-//             return eventDate >= today && eventDate <= nextMonth
-//           default:
-//             return true
-//         }
-//       })
-//     }
-
-//     // Apply sorting
-//     filtered.sort((a, b) => {
-//       switch (sortBy) {
-//         case "name":
-//           return a.name.localeCompare(b.name)
-//         case "date":
-//           return new Date(a.date) - new Date(b.date)
-//         case "rating":
-//           return (b.rating || 0) - (a.rating || 0)
-//         case "price":
-//           return (a.price || 0) - (b.price || 0)
-//         default:
-//           return 0
-//       }
+//     const filtered = filterEvents({
+//       searchTerm,
+//       category: selectedCategory,
+//       location: selectedLocation,
+//       dateFilter,
+//       sortBy,
 //     })
-
 //     setFilteredEvents(filtered)
-//   }
+//   }, [searchTerm, selectedCategory, selectedLocation, dateFilter, sortBy])
 
 //   // Reset all filters
 //   const resetFilters = () => {
@@ -292,24 +59,25 @@
 //     setSelectedLocation("")
 //     setDateFilter("")
 //     setSortBy("date")
-//     navigate("/")
+//     navigate("/events")
 //   }
 
 //   // Handle booking ticket
 //   const handleBookingClick = (eventId) => {
-//     navigate(`/booking/${eventId}`)
+//     // Navigate to event details instead of booking
+//     navigate(`/eventDetails/${eventId}`)
 //   }
 
 //   // Function to render categories filter
 //   const renderCategoryFilters = () => {
-//     const categories = ["Sports", "Concert", "Theater", "Conference"]
+//     const categories = ["Sports", "Concert", "Theater", "Conference", "Workshop", "Exhibition"]
 
 //     return (
 //       <div className="flex flex-wrap gap-2 mb-4">
 //         <button
-//           className={`px-3 py-1 text-sm rounded-full ${!selectedCategory
-//             ? "bg-blue-600 text-white"
-//             : "bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200"
+//           className={`px-3 py-1.5 text-sm rounded-full transition-all ${!selectedCategory
+//               ? "bg-purple-600 text-white shadow-md"
+//               : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
 //             }`}
 //           onClick={() => setSelectedCategory("")}
 //         >
@@ -318,9 +86,9 @@
 //         {categories.map((cat) => (
 //           <button
 //             key={cat}
-//             className={`px-3 py-1 text-sm rounded-full ${selectedCategory?.toLowerCase() === cat.toLowerCase()
-//               ? "bg-blue-600 text-white"
-//               : "bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200"
+//             className={`px-3 py-1.5 text-sm rounded-full transition-all ${selectedCategory?.toLowerCase() === cat.toLowerCase()
+//                 ? "bg-purple-600 text-white shadow-md"
+//                 : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
 //               }`}
 //             onClick={() => setSelectedCategory(cat.toLowerCase())}
 //           >
@@ -331,178 +99,199 @@
 //     )
 //   }
 
+//   // Process events to ensure they have all required properties
+//   const processEvents = (events) => {
+//     return events.map(event => ({
+//       ...event,
+//       // Ensure all required properties are available
+//       name: event.name || event.title || "Untitled Event",
+//       description: event.description || "No description available",
+//       location: event.location || "TBA",
+//       available_tickets: event.available_tickets || 0,
+//       capacity: event.capacity || 100,
+//       // Use image_path if available
+//       image: event.image_path || event.image || defaultImage,
+//       // Add price if available
+//       price: event.price || "Free",
+//       // Add rating if available
+//       rating: event.rating || 0,
+//     }))
+//   }
+
 //   return (
 //     <div className="bg-gray-50 dark:bg-gray-900 min-h-screen py-12">
 //       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-//         {/* Header section */}
-//         <div className="mb-8">
-//           <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
-//             {selectedCategory
-//               ? `${selectedCategory.charAt(0).toUpperCase() + selectedCategory.slice(1)} Events`
-//               : "All Events"}
-//           </h2>
-//           <p className="text-gray-600 dark:text-gray-400 mb-6">
-//             Discover and book tickets for amazing events happening near you
-//           </p>
+//         {/* Header section with gradient background */}
+//         <div className="relative mb-10 rounded-2xl overflow-hidden">
+//           <div className="gradient-bg p-8 md:p-12">
+//             <div className="max-w-3xl animate-fadeIn">
+//               <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+//                 {selectedCategory
+//                   ? `${selectedCategory.charAt(0).toUpperCase() + selectedCategory.slice(1)} Events`
+//                   : "Discover Amazing Events"}
+//               </h2>
+//               <p className="text-white/80 text-lg mb-6">Find and book tickets for the best events happening near you</p>
 
-//           {/* Search and filter section */}
-//           <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 mb-6">
-//             <div className="flex flex-col md:flex-row gap-4 mb-4">
-//               {/* Search input */}
-//               <div className="flex-1 relative">
-//                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-//                   <FontAwesomeIcon icon={faSearch} className="text-gray-400 dark:text-gray-500" />
+//               {/* Search input with glass effect */}
+//               <div className="relative glass-effect rounded-full overflow-hidden shadow-lg">
+//                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+//                   <FontAwesomeIcon icon={faSearch} className="text-white/70" />
 //                 </div>
 //                 <input
 //                   type="text"
-//                   placeholder="Search events..."
+//                   placeholder="Search events by name, location, or description..."
 //                   value={searchTerm}
 //                   onChange={(e) => setSearchTerm(e.target.value)}
-//                   className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+//                   className="w-full pl-12 pr-4 py-4 bg-transparent border-none text-white placeholder-white/70 focus:outline-none focus:ring-0"
 //                 />
+//                 {searchTerm && (
+//                   <button
+//                     className="absolute inset-y-0 right-0 pr-4 flex items-center text-white/70 hover:text-white"
+//                     onClick={() => setSearchTerm("")}
+//                   >
+//                     <FontAwesomeIcon icon={faTimes} />
+//                   </button>
+//                 )}
 //               </div>
+//             </div>
+//           </div>
+//         </div>
 
-//               {/* Filter toggle button (mobile) */}
+//         {/* Filters section */}
+//         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 mb-8 animate-slideUp">
+//           <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
+//             <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4 md:mb-0">
+//               <FontAwesomeIcon icon={faFilter} className="mr-2 text-purple-500" />
+//               Filter Events
+//             </h3>
+
+//             {/* Mobile filter toggle */}
+//             <div className="flex items-center gap-4 w-full md:w-auto">
 //               <button
-//                 className="md:hidden flex items-center justify-center px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-lg"
+//                 className="md:hidden flex items-center justify-center px-4 py-2 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded-lg w-full"
 //                 onClick={() => setShowFilters(!showFilters)}
 //               >
 //                 <FontAwesomeIcon icon={faFilter} className="mr-2" />
-//                 Filters
+//                 {showFilters ? "Hide Filters" : "Show Filters"}
 //               </button>
-
-//               {/* Desktop filters */}
-//               <div className="hidden md:flex md:flex-row gap-4">
-//                 {/* Location filter */}
-//                 <div className="w-48">
-//                   <select
-//                     value={selectedLocation}
-//                     onChange={(e) => setSelectedLocation(e.target.value)}
-//                     className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-//                   >
-//                     <option value="">All Locations</option>
-//                     {locations.map((location) => (
-//                       <option key={location} value={location}>
-//                         {location}
-//                       </option>
-//                     ))}
-//                   </select>
-//                 </div>
-
-//                 {/* Date filter */}
-//                 <div className="w-48">
-//                   <select
-//                     value={dateFilter}
-//                     onChange={(e) => setDateFilter(e.target.value)}
-//                     className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-//                   >
-//                     <option value="">Any Date</option>
-//                     <option value="today">Today</option>
-//                     <option value="thisWeek">This Week</option>
-//                     <option value="thisMonth">This Month</option>
-//                   </select>
-//                 </div>
-
-//                 {/* Sort by */}
-//                 <div className="w-48">
-//                   <select
-//                     value={sortBy}
-//                     onChange={(e) => setSortBy(e.target.value)}
-//                     className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-//                   >
-//                     <option value="date">Sort by Date</option>
-//                     <option value="name">Sort by Name</option>
-//                     <option value="rating">Sort by Rating</option>
-//                     <option value="price">Sort by Price</option>
-//                   </select>
-//                 </div>
-//               </div>
-//             </div>
-
-//             {/* Mobile filters (collapsible) */}
-//             {showFilters && (
-//               <div className="md:hidden space-y-4 mb-4 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-//                 {/* Location filter */}
-//                 <div>
-//                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Location</label>
-//                   <select
-//                     value={selectedLocation}
-//                     onChange={(e) => setSelectedLocation(e.target.value)}
-//                     className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-//                   >
-//                     <option value="">All Locations</option>
-//                     {locations.map((location) => (
-//                       <option key={location} value={location}>
-//                         {location}
-//                       </option>
-//                     ))}
-//                   </select>
-//                 </div>
-
-//                 {/* Date filter */}
-//                 <div>
-//                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Date</label>
-//                   <select
-//                     value={dateFilter}
-//                     onChange={(e) => setDateFilter(e.target.value)}
-//                     className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-//                   >
-//                     <option value="">Any Date</option>
-//                     <option value="today">Today</option>
-//                     <option value="thisWeek">This Week</option>
-//                     <option value="thisMonth">This Month</option>
-//                   </select>
-//                 </div>
-
-//                 {/* Sort by */}
-//                 <div>
-//                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Sort By</label>
-//                   <select
-//                     value={sortBy}
-//                     onChange={(e) => setSortBy(e.target.value)}
-//                     className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-//                   >
-//                     <option value="date">Sort by Date</option>
-//                     <option value="name">Sort by Name</option>
-//                     <option value="rating">Sort by Rating</option>
-//                     <option value="price">Sort by Price</option>
-//                   </select>
-//                 </div>
-//               </div>
-//             )}
-
-//             <div className="flex justify-between items-center">
-//               {/* Category filters */}
-//               {renderCategoryFilters()}
 
 //               {/* Reset filters button */}
 //               <button
 //                 onClick={resetFilters}
-//                 className="flex items-center px-3 py-1.5 text-sm bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 rounded-lg transition-colors"
+//                 className="flex items-center px-4 py-2 text-sm bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 rounded-lg transition-colors"
 //               >
-//                 <FontAwesomeIcon icon={faTimes} className="w-3.5 h-3.5 mr-1" />
-//                 Reset
+//                 <FontAwesomeIcon icon={faTimes} className="w-3.5 h-3.5 mr-2" />
+//                 Reset Filters
 //               </button>
+//             </div>
+//           </div>
+
+//           {/* Desktop filters */}
+//           <div className={`${showFilters ? "block" : "hidden md:block"}`}>
+//             {/* Category filters */}
+//             {renderCategoryFilters()}
+
+//             {/* Advanced filters toggle */}
+//             <button
+//               onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
+//               className="flex items-center text-sm text-purple-600 dark:text-purple-400 mb-4 hover:text-purple-800 dark:hover:text-purple-300 transition-colors"
+//             >
+//               <FontAwesomeIcon
+//                 icon={showAdvancedFilters ? faChevronUp : faChevronDown}
+//                 className="w-3.5 h-3.5 mr-1.5"
+//               />
+//               {showAdvancedFilters ? "Hide Advanced Filters" : "Show Advanced Filters"}
+//             </button>
+
+//             {/* Advanced filters */}
+//             <div
+//               className={`grid grid-cols-1 md:grid-cols-3 gap-4 ${showAdvancedFilters ? "animate-slideDown" : "hidden"}`}
+//             >
+//               {/* Location filter */}
+//               <div className="relative">
+//                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+//                   <FontAwesomeIcon icon={faMapMarkerAlt} className="text-gray-400 dark:text-gray-500" />
+//                 </div>
+//                 <select
+//                   value={selectedLocation}
+//                   onChange={(e) => setSelectedLocation(e.target.value)}
+//                   className="w-full pl-10 pr-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-purple-500 focus:border-purple-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+//                 >
+//                   <option value="">All Locations</option>
+//                   {locations.map((location) => (
+//                     <option key={location} value={location}>
+//                       {location}
+//                     </option>
+//                   ))}
+//                 </select>
+//               </div>
+
+//               {/* Date filter */}
+//               <div className="relative">
+//                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+//                   <FontAwesomeIcon icon={faCalendarAlt} className="text-gray-400 dark:text-gray-500" />
+//                 </div>
+//                 <select
+//                   value={dateFilter}
+//                   onChange={(e) => setDateFilter(e.target.value)}
+//                   className="w-full pl-10 pr-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-purple-500 focus:border-purple-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+//                 >
+//                   <option value="">Any Date</option>
+//                   <option value="today">Today</option>
+//                   <option value="thisWeek">This Week</option>
+//                   <option value="thisMonth">This Month</option>
+//                   <option value="nextMonth">Next Month</option>
+//                 </select>
+//               </div>
+
+//               {/* Sort by */}
+//               <div className="relative">
+//                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+//                   <FontAwesomeIcon icon={faSortAmountDown} className="text-gray-400 dark:text-gray-500" />
+//                 </div>
+//                 <select
+//                   value={sortBy}
+//                   onChange={(e) => setSortBy(e.target.value)}
+//                   className="w-full pl-10 pr-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-purple-500 focus:border-purple-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+//                 >
+//                   <option value="date">Sort by Date</option>
+//                   <option value="name">Sort by Name</option>
+//                   <option value="rating">Sort by Rating</option>
+//                   <option value="price">Sort by Price</option>
+//                 </select>
+//               </div>
 //             </div>
 //           </div>
 //         </div>
 
 //         {/* Loading state */}
 //         {loading ? (
-//           <div className="flex flex-col items-center justify-center py-12">
-//             <FontAwesomeIcon icon={faSpinner} spin className="text-blue-600 dark:text-blue-400 text-4xl mb-4" />
-//             <p className="text-gray-600 dark:text-gray-400">Loading events...</p>
+//           <div className="flex flex-col items-center justify-center py-16">
+//             <div className="relative w-20 h-20 mb-4">
+//               <FontAwesomeIcon
+//                 icon={faSpinner}
+//                 spin
+//                 className="text-purple-600 dark:text-purple-400 text-4xl absolute"
+//                 style={{ top: "50%", left: "50%", transform: "translate(-50%, -50%)" }}
+//               />
+//               <div className="w-full h-full rounded-full border-4 border-purple-200 dark:border-purple-900/30 animate-pulse-glow"></div>
+//             </div>
+//             <p className="text-gray-600 dark:text-gray-400 text-lg">Loading amazing events for you...</p>
 //           </div>
 //         ) : error ? (
-//           <div className="bg-red-50 dark:bg-red-900/20 text-red-800 dark:text-red-200 p-4 rounded-lg text-center">
-//             {error}
+//           <div className="bg-red-50 dark:bg-red-900/20 text-red-800 dark:text-red-200 p-6 rounded-xl text-center shadow-sm">
+//             <h3 className="text-xl font-semibold mb-2">Oops! Something went wrong</h3>
+//             <p>{error}</p>
 //           </div>
 //         ) : filteredEvents.length === 0 ? (
-//           <div className="bg-blue-50 dark:bg-blue-900/20 text-blue-800 dark:text-blue-200 p-8 rounded-lg text-center">
+//           <div className="bg-purple-50 dark:bg-purple-900/20 text-purple-800 dark:text-purple-200 p-8 rounded-xl text-center shadow-sm">
+//             <div className="inline-flex justify-center items-center w-16 h-16 bg-purple-100 dark:bg-purple-800/50 rounded-full mb-4">
+//               <FontAwesomeIcon icon={faTicketAlt} className="text-purple-600 dark:text-purple-300 text-2xl" />
+//             </div>
 //             <h3 className="text-xl font-semibold mb-2">No events found</h3>
-//             <p>No events match your current filters. Try adjusting your search criteria.</p>
+//             <p className="mb-4">No events match your current filters. Try adjusting your search criteria.</p>
 //             <button
-//               className="mt-4 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
+//               className="px-6 py-2.5 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors shadow-sm"
 //               onClick={resetFilters}
 //             >
 //               Clear All Filters
@@ -510,31 +299,42 @@
 //           </div>
 //         ) : (
 //           <>
-//             {/* Events count */}
-//             <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
-//               Showing {filteredEvents.length} event{filteredEvents.length !== 1 ? "s" : ""}
-//             </p>
+//             {/* Events count and results summary */}
+//             <div className="flex justify-between items-center mb-6">
+//               <p className="text-sm text-gray-600 dark:text-gray-400">
+//                 Showing{" "}
+//                 <span className="font-semibold text-purple-600 dark:text-purple-400">{filteredEvents.length}</span>{" "}
+//                 event{filteredEvents.length !== 1 ? "s" : ""}
+//                 {selectedCategory && (
+//                   <span>
+//                     {" "}
+//                     in <span className="font-semibold">{selectedCategory}</span>
+//                   </span>
+//                 )}
+//                 {selectedLocation && (
+//                   <span>
+//                     {" "}
+//                     at <span className="font-semibold">{selectedLocation}</span>
+//                   </span>
+//                 )}
+//                 {dateFilter && (
+//                   <span>
+//                     {" "}
+//                     for <span className="font-semibold">{dateFilter.replace(/([A-Z])/g, " $1").toLowerCase()}</span>
+//                   </span>
+//                 )}
+//               </p>
+//             </div>
 
 //             {/* Events grid */}
-//             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-//               {filteredEvents.map((event) => (
-//                 <EventCard
-//                   key={event.id}
-//                   event={{
-//                     ...event,
-//                     // Ensure all required properties are available
-//                     name: event.name || event.title || "Untitled Event",
-//                     description: event.description || "No description available",
-//                     location: event.location || "TBA",
-//                     available_tickets: event.available_tickets || 0,
-//                     capacity: event.capacity || 100,
-//                     // Add price if available
-//                     price: event.price ? `$${event.price}` : "Free",
-//                     // Add rating if available
-//                     rating: event.rating || 0,
-//                   }}
-//                   onBookingClick={handleBookingClick}
-//                 />
+//             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+//               {processEvents(filteredEvents).map((event, index) => (
+//                 <div key={event.id} className={`animate-slideUp delay-${(index % 5) * 100}`}>
+//                   <EventCard
+//                     event={event}
+//                     onBookingClick={handleBookingClick}
+//                   />
+//                 </div>
 //               ))}
 //             </div>
 //           </>
@@ -545,12 +345,25 @@
 // }
 
 // export default Events
+
+
 "use client"
 
 import { useState, useEffect } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faSearch, faFilter, faTimes, faSpinner } from "@fortawesome/free-solid-svg-icons"
+import {
+  faSearch,
+  faFilter,
+  faTimes,
+  faSpinner,
+  faCalendarAlt,
+  faMapMarkerAlt,
+  faSortAmountDown,
+  faTicketAlt,
+  faChevronDown,
+  faChevronUp,
+} from "@fortawesome/free-solid-svg-icons"
 import { EventCard } from "../EventCard/EventCard"
 import { useEvents } from "../../context/EventsContext"
 
@@ -570,6 +383,7 @@ const Events = () => {
   const [sortBy, setSortBy] = useState("date")
   const [showFilters, setShowFilters] = useState(false)
   const [filteredEvents, setFilteredEvents] = useState([])
+  const [showAdvancedFilters, setShowAdvancedFilters] = useState(false)
 
   // Get locations for filter dropdown
   const locations = getLocations()
@@ -604,14 +418,14 @@ const Events = () => {
 
   // Function to render categories filter
   const renderCategoryFilters = () => {
-    const categories = ["Sports", "Concert", "Theater", "Conference"]
+    const categories = ["Sports", "Concert", "Theater", "Conference", "Workshop", "Exhibition"]
 
     return (
-      <div className="flex flex-wrap gap-8 my-6">
+      <div className="flex flex-wrap gap-2 mb-4">
         <button
-          className={`px-3 py-1 text-sm rounded-full ${!selectedCategory
-            ? "bg-blue-600 text-white"
-            : "bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200"
+          className={`px-3 py-1.5 text-sm rounded-full transition-all ${!selectedCategory
+              ? "bg-purple-600 text-white shadow-md"
+              : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
             }`}
           onClick={() => setSelectedCategory("")}
         >
@@ -620,9 +434,9 @@ const Events = () => {
         {categories.map((cat) => (
           <button
             key={cat}
-            className={`px-3 py-1 text-sm rounded-full ${selectedCategory?.toLowerCase() === cat.toLowerCase()
-              ? "bg-blue-600 text-white"
-              : "bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200"
+            className={`px-3 py-1.5 text-sm rounded-full transition-all ${selectedCategory?.toLowerCase() === cat.toLowerCase()
+                ? "bg-purple-600 text-white shadow-md"
+                : "bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
               }`}
             onClick={() => setSelectedCategory(cat.toLowerCase())}
           >
@@ -633,178 +447,199 @@ const Events = () => {
     )
   }
 
-  return (
-    <div className="bg-gray-50 dark:bg-gray-900 min-h-screen py-28">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header section */}
-        <div className="mb-8">
-          <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
-            {selectedCategory
-              ? `${selectedCategory.charAt(0).toUpperCase() + selectedCategory.slice(1)} Events`
-              : "All Events"}
-          </h2>
-          <p className="text-gray-600 dark:text-gray-400 mb-6">
-            Discover and book tickets for amazing events happening near you
-          </p>
+  // Process events to ensure they have all required properties
+  const processEvents = (events) => {
+    return events.map((event) => ({
+      ...event,
+      // Ensure all required properties are available
+      name: event.name || event.title || "Untitled Event",
+      description: event.description || "No description available",
+      location: event.location || "TBA",
+      available_tickets: event.available_tickets || 0,
+      capacity: event.capacity || 100,
+      // Use image_path if available
+      image: event.image_path || event.image || "/placeholder.svg",
+      // Add price if available
+      price: event.price || "Free",
+      // Add rating if available
+      rating: event.rating || 0,
+    }))
+  }
 
-          {/* Search and filter section */}
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 mb-6">
-            <div className="flex flex-col md:flex-row gap-4 mb-4">
-              {/* Search input */}
-              <div className="flex-1 relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <FontAwesomeIcon icon={faSearch} className="text-gray-400 dark:text-gray-500" />
+  return (
+    <div className="bg-gray-50 dark:bg-gray-900 min-h-screen py-12">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Header section with gradient background */}
+        <div className="relative mb-10 rounded-2xl overflow-hidden">
+          <div className="gradient-bg p-8 md:p-12">
+            <div className="max-w-3xl animate-fadeIn">
+              <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+                {selectedCategory
+                  ? `${selectedCategory.charAt(0).toUpperCase() + selectedCategory.slice(1)} Events`
+                  : "Discover Amazing Events"}
+              </h2>
+              <p className="text-white/80 text-lg mb-6">Find and book tickets for the best events happening near you</p>
+
+              {/* Search input with glass effect */}
+              <div className="relative glass-effect rounded-full overflow-hidden shadow-lg">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                  <FontAwesomeIcon icon={faSearch} className="text-white/70" />
                 </div>
                 <input
                   type="text"
-                  placeholder="Search events..."
+                  placeholder="Search events by name, location, or description..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                  className="w-full pl-12 pr-4 py-4 bg-transparent border-none text-white placeholder-white/70 focus:outline-none focus:ring-0"
                 />
+                {searchTerm && (
+                  <button
+                    className="absolute inset-y-0 right-0 pr-4 flex items-center text-white/70 hover:text-white"
+                    onClick={() => setSearchTerm("")}
+                  >
+                    <FontAwesomeIcon icon={faTimes} />
+                  </button>
+                )}
               </div>
+            </div>
+          </div>
+        </div>
 
-              {/* Filter toggle button (mobile) */}
+        {/* Filters section */}
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 mb-8 animate-slideUp">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
+            <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4 md:mb-0">
+              <FontAwesomeIcon icon={faFilter} className="mr-2 text-purple-500" />
+              Filter Events
+            </h3>
+
+            {/* Mobile filter toggle */}
+            <div className="flex items-center gap-4 w-full md:w-auto">
               <button
-                className="md:hidden flex items-center justify-center px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-lg"
+                className="md:hidden flex items-center justify-center px-4 py-2 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded-lg w-full"
                 onClick={() => setShowFilters(!showFilters)}
               >
                 <FontAwesomeIcon icon={faFilter} className="mr-2" />
-                Filters
+                {showFilters ? "Hide Filters" : "Show Filters"}
               </button>
-
-              {/* Desktop filters */}
-              <div className="hidden md:flex md:flex-row gap-4">
-                {/* Location filter */}
-                <div className="w-48">
-                  <select
-                    value={selectedLocation}
-                    onChange={(e) => setSelectedLocation(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                  >
-                    <option value="">All Locations</option>
-                    {locations.map((location) => (
-                      <option key={location} value={location}>
-                        {location}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                {/* Date filter */}
-                <div className="w-48">
-                  <select
-                    value={dateFilter}
-                    onChange={(e) => setDateFilter(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                  >
-                    <option value="">Any Date</option>
-                    <option value="today">Today</option>
-                    <option value="thisWeek">This Week</option>
-                    <option value="thisMonth">This Month</option>
-                  </select>
-                </div>
-
-                {/* Sort by */}
-                <div className="w-48">
-                  <select
-                    value={sortBy}
-                    onChange={(e) => setSortBy(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                  >
-                    <option value="date">Sort by Date</option>
-                    <option value="name">Sort by Name</option>
-                    <option value="rating">Sort by Rating</option>
-                    <option value="price">Sort by Price</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-
-            {/* Mobile filters (collapsible) */}
-            {showFilters && (
-              <div className="md:hidden space-y-4 mb-4 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                {/* Location filter */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Location</label>
-                  <select
-                    value={selectedLocation}
-                    onChange={(e) => setSelectedLocation(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                  >
-                    <option value="">All Locations</option>
-                    {locations.map((location) => (
-                      <option key={location} value={location}>
-                        {location}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                {/* Date filter */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Date</label>
-                  <select
-                    value={dateFilter}
-                    onChange={(e) => setDateFilter(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                  >
-                    <option value="">Any Date</option>
-                    <option value="today">Today</option>
-                    <option value="thisWeek">This Week</option>
-                    <option value="thisMonth">This Month</option>
-                  </select>
-                </div>
-
-                {/* Sort by */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Sort By</label>
-                  <select
-                    value={sortBy}
-                    onChange={(e) => setSortBy(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                  >
-                    <option value="date">Sort by Date</option>
-                    <option value="name">Sort by Name</option>
-                    <option value="rating">Sort by Rating</option>
-                    <option value="price">Sort by Price</option>
-                  </select>
-                </div>
-              </div>
-            )}
-
-            <div className="flex justify-between items-center">
-              {/* Category filters */}
-              {renderCategoryFilters()}
 
               {/* Reset filters button */}
               <button
                 onClick={resetFilters}
-                className="flex items-center px-3 py-1.5 text-sm bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 rounded-lg transition-colors"
+                className="flex items-center px-4 py-2 text-sm bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 rounded-lg transition-colors"
               >
-                <FontAwesomeIcon icon={faTimes} className="w-3.5 h-3.5 mr-1" />
-                Reset
+                <FontAwesomeIcon icon={faTimes} className="w-3.5 h-3.5 mr-2" />
+                Reset Filters
               </button>
+            </div>
+          </div>
+
+          {/* Desktop filters */}
+          <div className={`${showFilters ? "block" : "hidden md:block"}`}>
+            {/* Category filters */}
+            {renderCategoryFilters()}
+
+            {/* Advanced filters toggle */}
+            <button
+              onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
+              className="flex items-center text-sm text-purple-600 dark:text-purple-400 mb-4 hover:text-purple-800 dark:hover:text-purple-300 transition-colors"
+            >
+              <FontAwesomeIcon
+                icon={showAdvancedFilters ? faChevronUp : faChevronDown}
+                className="w-3.5 h-3.5 mr-1.5"
+              />
+              {showAdvancedFilters ? "Hide Advanced Filters" : "Show Advanced Filters"}
+            </button>
+
+            {/* Advanced filters */}
+            <div
+              className={`grid grid-cols-1 md:grid-cols-3 gap-4 ${showAdvancedFilters ? "animate-slideDown" : "hidden"}`}
+            >
+              {/* Location filter */}
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <FontAwesomeIcon icon={faMapMarkerAlt} className="text-gray-400 dark:text-gray-500" />
+                </div>
+                <select
+                  value={selectedLocation}
+                  onChange={(e) => setSelectedLocation(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-purple-500 focus:border-purple-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                >
+                  <option value="">All Locations</option>
+                  {locations.map((location) => (
+                    <option key={location} value={location}>
+                      {location}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Date filter */}
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <FontAwesomeIcon icon={faCalendarAlt} className="text-gray-400 dark:text-gray-500" />
+                </div>
+                <select
+                  value={dateFilter}
+                  onChange={(e) => setDateFilter(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-purple-500 focus:border-purple-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                >
+                  <option value="">Any Date</option>
+                  <option value="today">Today</option>
+                  <option value="thisWeek">This Week</option>
+                  <option value="thisMonth">This Month</option>
+                  <option value="nextMonth">Next Month</option>
+                </select>
+              </div>
+
+              {/* Sort by */}
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <FontAwesomeIcon icon={faSortAmountDown} className="text-gray-400 dark:text-gray-500" />
+                </div>
+                <select
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-purple-500 focus:border-purple-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                >
+                  <option value="date">Sort by Date</option>
+                  <option value="name">Sort by Name</option>
+                  <option value="rating">Sort by Rating</option>
+                  <option value="price">Sort by Price</option>
+                </select>
+              </div>
             </div>
           </div>
         </div>
 
         {/* Loading state */}
         {loading ? (
-          <div className="flex flex-col items-center justify-center py-12">
-            <FontAwesomeIcon icon={faSpinner} spin className="text-blue-600 dark:text-blue-400 text-4xl mb-4" />
-            <p className="text-gray-600 dark:text-gray-400">Loading events...</p>
+          <div className="flex flex-col items-center justify-center py-16">
+            <div className="relative w-20 h-20 mb-4">
+              <FontAwesomeIcon
+                icon={faSpinner}
+                spin
+                className="text-purple-600 dark:text-purple-400 text-4xl absolute"
+                style={{ top: "50%", left: "50%", transform: "translate(-50%, -50%)" }}
+              />
+              <div className="w-full h-full rounded-full border-4 border-purple-200 dark:border-purple-900/30 animate-pulse-glow"></div>
+            </div>
+            <p className="text-gray-600 dark:text-gray-400 text-lg">Loading amazing events for you...</p>
           </div>
         ) : error ? (
-          <div className="bg-red-50 dark:bg-red-900/20 text-red-800 dark:text-red-200 p-4 rounded-lg text-center">
-            {error}
+          <div className="bg-red-50 dark:bg-red-900/20 text-red-800 dark:text-red-200 p-6 rounded-xl text-center shadow-sm">
+            <h3 className="text-xl font-semibold mb-2">Oops! Something went wrong</h3>
+            <p>{error}</p>
           </div>
         ) : filteredEvents.length === 0 ? (
-          <div className="bg-blue-50 dark:bg-blue-900/20 text-blue-800 dark:text-blue-200 p-8 rounded-lg text-center">
+          <div className="bg-purple-50 dark:bg-purple-900/20 text-purple-800 dark:text-purple-200 p-8 rounded-xl text-center shadow-sm">
+            <div className="inline-flex justify-center items-center w-16 h-16 bg-purple-100 dark:bg-purple-800/50 rounded-full mb-4">
+              <FontAwesomeIcon icon={faTicketAlt} className="text-purple-600 dark:text-purple-300 text-2xl" />
+            </div>
             <h3 className="text-xl font-semibold mb-2">No events found</h3>
-            <p>No events match your current filters. Try adjusting your search criteria.</p>
+            <p className="mb-4">No events match your current filters. Try adjusting your search criteria.</p>
             <button
-              className="mt-4 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
+              className="px-6 py-2.5 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors shadow-sm"
               onClick={resetFilters}
             >
               Clear All Filters
@@ -812,31 +647,49 @@ const Events = () => {
           </div>
         ) : (
           <>
-            {/* Events count */}
-            <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
-              Showing {filteredEvents.length} event{filteredEvents.length !== 1 ? "s" : ""}
-            </p>
+            {/* Events count and results summary */}
+            <div className="flex justify-between items-center mb-6">
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                Showing{" "}
+                <span className="font-semibold text-purple-600 dark:text-purple-400">{filteredEvents.length}</span>{" "}
+                event{filteredEvents.length !== 1 ? "s" : ""}
+                {selectedCategory && (
+                  <span>
+                    {" "}
+                    in <span className="font-semibold">{selectedCategory}</span>
+                  </span>
+                )}
+                {selectedLocation && (
+                  <span>
+                    {" "}
+                    at <span className="font-semibold">{selectedLocation}</span>
+                  </span>
+                )}
+                {dateFilter && (
+                  <span>
+                    {" "}
+                    for <span className="font-semibold">{dateFilter.replace(/([A-Z])/g, " $1").toLowerCase()}</span>
+                  </span>
+                )}
+              </p>
+            </div>
 
             {/* Events grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredEvents.map((event) => (
-                <EventCard
-                  key={event.id}
-                  event={{
-                    ...event,
-                    // Ensure all required properties are available
-                    name: event.name || event.title || "Untitled Event",
-                    description: event.description || "No description available",
-                    location: event.location || "TBA",
-                    available_tickets: event.available_tickets || 0,
-                    capacity: event.capacity || 100,
-                    // Add price if available
-                    price: event.price ? `$${event.price}` : "Free",
-                    // Add rating if available
-                    rating: event.rating || 0,
-                  }}
-                  onBookingClick={handleBookingClick}
-                />
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              {processEvents(filteredEvents).map((event, index) => (
+                <div key={event.id} className={`animate-slideUp delay-${(index % 5) * 100}`}>
+                  <EventCard event={event} onBookingClick={handleBookingClick}>
+                    <img
+                      src={event.image_path || event.image || "/placeholder.svg"}
+                      alt={event.name}
+                      className="w-full h-48 object-cover rounded-t-lg"
+                      onError={(e) => {
+                        e.target.onerror = null
+                        e.target.src = "/placeholder.svg"
+                      }}
+                    />
+                  </EventCard>
+                </div>
               ))}
             </div>
           </>
@@ -847,5 +700,3 @@ const Events = () => {
 }
 
 export default Events
-
-

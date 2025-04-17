@@ -29,6 +29,9 @@ import {
 import { fetchAllEvents, deleteEvent } from "../../api/adminApi"
 import { useToast } from "../../context/ToastContext"
 
+// Import the image utility functions at the top of the file
+import { getImageUrl, handleImageError } from "../../utils/imageUtils"
+
 const EventsManagement = () => {
   const [events, setEvents] = useState([])
   const [filteredEvents, setFilteredEvents] = useState([])
@@ -160,6 +163,17 @@ const EventsManagement = () => {
     if (pageNumber > 0 && pageNumber <= totalPages) {
       setCurrentPage(pageNumber)
     }
+  }
+
+  // Function to get the event image URL
+  const getEventImageUrl = (event) => {
+    if (event.image_path) {
+      return getImageUrl(event.image_path)
+    }
+    if (event.image) {
+      return getImageUrl(event.image)
+    }
+    return "/placeholder.svg" // Fallback placeholder image
   }
 
   return (
@@ -341,15 +355,16 @@ const EventsManagement = () => {
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center">
                           <div className="h-10 w-10 flex-shrink-0">
-                            {event.image ? (
+                            {event.image_path || event.image ? (
                               <img
                                 className="h-10 w-10 rounded-full object-cover transition-transform duration-200 group-hover:scale-110"
-                                src={event.image || "/placeholder.svg"}
+                                src={getEventImageUrl(event) || "/placeholder.svg"}
                                 alt={event.name}
+                                onError={handleImageError}
                               />
                             ) : (
                               <div className="h-10 w-10 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center text-white font-medium transition-transform duration-200 group-hover:scale-110">
-                                {event.name?.charAt(0)}
+                                {event.name?.charAt(0) || "E"}
                               </div>
                             )}
                           </div>
