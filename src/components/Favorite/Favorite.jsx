@@ -429,7 +429,7 @@ const Favorite = () => {
   const filteredFavorites = getFilteredAndSortedFavorites()
 
   return (
-    <div className="bg-gray-50 dark:bg-gray-900 min-h-screen py-12 animate-fadeIn">
+    <div className="bg-gray-50 pt-28 dark:bg-gray-900 min-h-screen py-12 animate-fadeIn">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-8 flex flex-col md:flex-row md:items-center md:justify-between">
           <div className="mb-4 md:mb-0">

@@ -330,7 +330,7 @@ const Tickets = () => {
   }
 
   return (
-    <div className="bg-gray-50 dark:bg-gray-900 min-h-screen py-12 transition-colors duration-300">
+    <div className="bg-gray-50 pt-22 dark:bg-gray-900 min-h-screen py-12 transition-colors duration-300">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-8 bg-gradient-to-r from-purple-600 to-indigo-600 rounded-2xl p-8 shadow-lg animate-fadeIn">
