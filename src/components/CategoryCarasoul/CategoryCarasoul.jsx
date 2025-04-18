@@ -105,16 +105,16 @@ const CategoryCarousel = () => {
   )
 
   const settings = {
-    dots: true,
-    infinite: true,
+    dots: false,
+    infinite: false,
     speed: 500,
-    slidesToShow: 5,
+    slidesToShow: 4,
     slidesToScroll: 1,
     autoplay: true,
     autoplaySpeed: 3000,
     cssEase: "ease-in-out",
-    nextArrow: <CustomArrow direction="right" />,
-    prevArrow: <CustomArrow direction="left" />,
+    // nextArrow: <CustomArrow direction="right" />,
+    // prevArrow: <CustomArrow direction="left" />,
     responsive: [
       {
         breakpoint: 1280,
@@ -241,3 +241,5 @@ const CategoryCarousel = () => {
 }
 
 export default CategoryCarousel
+
+

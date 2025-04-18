@@ -31,6 +31,7 @@ import { loadStripe } from "@stripe/stripe-js"
 import { Elements, CardElement, useStripe, useElements } from "@stripe/react-stripe-js"
 import { motion, AnimatePresence } from "framer-motion"
 import axios from "axios"
+import styles from "./checkout.module.css"
 
 // Add this after the imports
 // Add a style tag for the price highlight animation
@@ -73,9 +74,14 @@ const PaymentForm = ({ eventDetails, quantity, totalPrice, onSuccess, onCancel }
   // Add this at the beginning of the PaymentForm component
   if (!stripe) {
     return (
-      <div className="p-6 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg border border-yellow-200 dark:border-yellow-800">
+      <div
+        className={`p-6 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg border border-yellow-200 dark:border-yellow-800 ${styles.fadeInUp}`}
+      >
         <div className="flex items-start">
-          <FontAwesomeIcon icon={faExclamationTriangle} className="text-yellow-600 dark:text-yellow-400 mt-1 mr-3" />
+          <FontAwesomeIcon
+            icon={faExclamationTriangle}
+            className={`text-yellow-600 dark:text-yellow-400 mt-1 mr-3 ${styles.warningAccent}`}
+          />
           <div>
             <h4 className="text-lg font-semibold text-yellow-800 dark:text-yellow-300 mb-2">Stripe Not Configured</h4>
             <p className="text-yellow-700 dark:text-yellow-400 mb-4">
@@ -89,7 +95,7 @@ const PaymentForm = ({ eventDetails, quantity, totalPrice, onSuccess, onCancel }
             <div className="mt-4">
               <button
                 onClick={onCancel}
-                className="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 text-white rounded-md transition-colors"
+                className={`${styles.secondaryButton} px-4 py-2 bg-yellow-600 hover:bg-yellow-700 text-white rounded-md transition-colors`}
               >
                 <FontAwesomeIcon icon={faArrowLeft} className="mr-2" />
                 Go Back
@@ -214,158 +220,161 @@ const PaymentForm = ({ eventDetails, quantity, totalPrice, onSuccess, onCancel }
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
       onSubmit={handleSubmit}
-      className="space-y-6"
+      className={`space-y-6 ${styles.fadeInUp}`}
     >
       <div className="space-y-4">
-        <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4 flex items-center">
-          <FontAwesomeIcon icon={faUser} className="mr-3 text-indigo-600 dark:text-indigo-400" />
+        <h3 className={`text-xl font-bold text-gray-900 dark:text-white mb-4 flex items-center ${styles.gradientText}`}>
+          <FontAwesomeIcon icon={faUser} className={`mr-3 ${styles.primaryAccent}`} />
           Personal Information
         </h3>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Full Name
-            </label>
-            <div className="relative group">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <FontAwesomeIcon
-                  icon={faUser}
-                  className="text-gray-400 group-hover:text-indigo-500 transition-colors duration-200"
+            <div className={styles.inputGroup}>
+              <label
+                htmlFor="name"
+                className={`${styles.inputLabel} ${window.document.documentElement.classList.contains("dark") ? styles.darkInputLabel : ""}`}
+              >
+                Full Name
+              </label>
+              <div className="relative group">
+
+                <input
+                  type="text"
+                  id="name"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleInputChange}
+                  className={`${styles.enhancedFormControl} pl-12  block w-full ${errors.name ? "border-red-500" : "border-gray-300 dark:border-gray-600"
+                    } bg-white dark:bg-gray-800 focus:border-indigo-500 focus:ring-indigo-500 dark:text-white transition-all duration-200 hover:border-indigo-300 dark:hover:border-indigo-700`}
+                  placeholder="  Please enter your full name"
                 />
               </div>
-              <input
-                type="text"
-                id="name"
-                name="name"
-                value={formData.name}
-                onChange={handleInputChange}
-                className={`pl-10 block w-full rounded-md border ${errors.name ? "border-red-500" : "border-gray-300 dark:border-gray-600"
-                  } bg-white dark:bg-gray-800 py-3 px-4 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:text-white transition-all duration-200 hover:border-indigo-300 dark:hover:border-indigo-700`}
-                placeholder="John Doe"
-              />
+              {errors.name && (
+                <motion.p
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: "auto" }}
+                  className="mt-1 text-sm text-red-600"
+                >
+                  {errors.name}
+                </motion.p>
+              )}
             </div>
-            {errors.name && (
-              <motion.p
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: "auto" }}
-                className="mt-1 text-sm text-red-600"
-              >
-                {errors.name}
-              </motion.p>
-            )}
           </div>
 
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Email Address
-            </label>
-            <div className="relative group">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <FontAwesomeIcon
-                  icon={faEnvelope}
-                  className="text-gray-400 group-hover:text-indigo-500 transition-colors duration-200"
+            <div className={styles.inputGroup}>
+              <label
+                htmlFor="email"
+                className={`${styles.inputLabel} ${window.document.documentElement.classList.contains("dark") ? styles.darkInputLabel : ""}`}
+              >
+                Email Address
+              </label>
+              <div className="relative group">
+
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  className={`${styles.enhancedFormControl}  pl-12  block w-full ${errors.email ? "border-red-500" : "border-gray-300 dark:border-gray-600"
+                    } bg-white dark:bg-gray-800 focus:border-indigo-500 focus:ring-indigo-500 dark:text-white transition-all duration-200 hover:border-indigo-300 dark:hover:border-indigo-700`}
+                  placeholder="   Please enter your email address"
                 />
               </div>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                value={formData.email}
-                onChange={handleInputChange}
-                className={`pl-10 block w-full rounded-md border ${errors.email ? "border-red-500" : "border-gray-300 dark:border-gray-600"
-                  } bg-white dark:bg-gray-800 py-3 px-4 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:text-white transition-all duration-200 hover:border-indigo-300 dark:hover:border-indigo-700`}
-                placeholder="john.doe@example.com"
-              />
+              {errors.email && (
+                <motion.p
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: "auto" }}
+                  className="mt-1 text-sm text-red-600"
+                >
+                  {errors.email}
+                </motion.p>
+              )}
             </div>
-            {errors.email && (
-              <motion.p
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: "auto" }}
-                className="mt-1 text-sm text-red-600"
-              >
-                {errors.email}
-              </motion.p>
-            )}
           </div>
 
           <div>
-            <label htmlFor="phone" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Phone Number
-            </label>
-            <div className="relative group">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <FontAwesomeIcon
-                  icon={faPhone}
-                  className="text-gray-400 group-hover:text-indigo-500 transition-colors duration-200"
+            <div className={styles.inputGroup}>
+              <label
+                htmlFor="phone"
+                className={`${styles.inputLabel} ${window.document.documentElement.classList.contains("dark") ? styles.darkInputLabel : ""}`}
+              >
+                Phone Number
+              </label>
+              <div className="relative group">
+
+                <input
+                  type="tel"
+                  id="phone"
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleInputChange}
+                  className={`${styles.enhancedFormControl} pl-12  block w-full ${errors.phone ? "border-red-500" : "border-gray-300 dark:border-gray-600"
+                    } bg-white dark:bg-gray-800 focus:border-indigo-500 focus:ring-indigo-500 dark:text-white transition-all duration-200 hover:border-indigo-300 dark:hover:border-indigo-700`}
+                  placeholder="  Please enter your phone number"
                 />
               </div>
-              <input
-                type="tel"
-                id="phone"
-                name="phone"
-                value={formData.phone}
-                onChange={handleInputChange}
-                className={`pl-10 block w-full rounded-md border ${errors.phone ? "border-red-500" : "border-gray-300 dark:border-gray-600"
-                  } bg-white dark:bg-gray-800 py-3 px-4 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:text-white transition-all duration-200 hover:border-indigo-300 dark:hover:border-indigo-700`}
-                placeholder="+1 (555) 123-4567"
-              />
+              {errors.phone && (
+                <motion.p
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: "auto" }}
+                  className="mt-1 text-sm text-red-600"
+                >
+                  {errors.phone}
+                </motion.p>
+              )}
             </div>
-            {errors.phone && (
-              <motion.p
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: "auto" }}
-                className="mt-1 text-sm text-red-600"
-              >
-                {errors.phone}
-              </motion.p>
-            )}
           </div>
 
           <div>
-            <label htmlFor="address" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Address
-            </label>
-            <div className="relative group">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <FontAwesomeIcon
-                  icon={faIdCard}
-                  className="text-gray-400 group-hover:text-indigo-500 transition-colors duration-200"
+            <div className={styles.inputGroup}>
+              <label
+                htmlFor="address"
+                className={`${styles.inputLabel} ${window.document.documentElement.classList.contains("dark") ? styles.darkInputLabel : ""}`}
+              >
+                Address
+              </label>
+              <div className="relative group">
+
+                <input
+                  type="text"
+                  id="address"
+                  name="address"
+                  value={formData.address}
+                  onChange={handleInputChange}
+                  className={`${styles.enhancedFormControl} pl-12  block w-full ${errors.address ? "border-red-500" : "border-gray-300 dark:border-gray-600"
+                    } bg-white dark:bg-gray-800 focus:border-indigo-500 focus:ring-indigo-500 dark:text-white transition-all duration-200 hover:border-indigo-300 dark:hover:border-indigo-700`}
+                  placeholder="  Please enter your address"
                 />
               </div>
-              <input
-                type="text"
-                id="address"
-                name="address"
-                value={formData.address}
-                onChange={handleInputChange}
-                className={`pl-10 block w-full rounded-md border ${errors.address ? "border-red-500" : "border-gray-300 dark:border-gray-600"
-                  } bg-white dark:bg-gray-800 py-3 px-4 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:text-white transition-all duration-200 hover:border-indigo-300 dark:hover:border-indigo-700`}
-                placeholder="123 Main St, City, Country"
-              />
+              {errors.address && (
+                <motion.p
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: "auto" }}
+                  className="mt-1 text-sm text-red-600"
+                >
+                  {errors.address}
+                </motion.p>
+              )}
             </div>
-            {errors.address && (
-              <motion.p
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: "auto" }}
-                className="mt-1 text-sm text-red-600"
-              >
-                {errors.address}
-              </motion.p>
-            )}
           </div>
         </div>
       </div>
 
       <div className="space-y-4 pt-6 border-t border-gray-200 dark:border-gray-700">
-        <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4 flex items-center">
-          <FontAwesomeIcon icon={faCreditCard} className="mr-3 text-indigo-600 dark:text-indigo-400" />
+        <h3 className={`text-xl font-bold text-gray-900 dark:text-white mb-4 flex items-center ${styles.gradientText}`}>
+          <FontAwesomeIcon icon={faCreditCard} className={`mr-3 ${styles.primaryAccent}`} />
           Payment Information
         </h3>
 
-        <div className="bg-indigo-50 dark:bg-indigo-900/20 rounded-lg p-4 mb-4">
+        <div className={`${styles.cardBackground} bg-indigo-50 dark:bg-indigo-900/20 rounded-lg p-4 mb-4`}>
           <div className="flex items-start">
-            <FontAwesomeIcon icon={faLock} className="text-indigo-600 dark:text-indigo-400 mt-1 mr-3" />
+            <FontAwesomeIcon
+              icon={faLock}
+              className={`text-indigo-600 dark:text-indigo-400 mt-1 mr-3 ${styles.primaryAccent}`}
+            />
             <div>
               <h4 className="text-sm font-semibold text-indigo-800 dark:text-indigo-300 mb-1">Test Card Information</h4>
               <p className="text-xs text-indigo-700 dark:text-indigo-400">
@@ -381,7 +390,7 @@ const PaymentForm = ({ eventDetails, quantity, totalPrice, onSuccess, onCancel }
             Card Details
           </label>
           <div
-            className={`p-4 border ${errors.card ? "border-red-500" : "border-gray-300 dark:border-gray-600"
+            className={`${styles.enhancedCardElement} p-4 border ${errors.card ? "border-red-500" : "border-gray-300 dark:border-gray-600"
               } rounded-md bg-white dark:bg-gray-800 transition-all duration-200 hover:border-indigo-300 dark:hover:border-indigo-700 focus-within:border-indigo-500 focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-opacity-50`}
           >
             <CardElement
@@ -432,7 +441,7 @@ const PaymentForm = ({ eventDetails, quantity, totalPrice, onSuccess, onCancel }
           whileTap={{ scale: 0.98 }}
           type="button"
           onClick={onCancel}
-          className="inline-flex items-center px-5 py-3 border border-gray-300 dark:border-gray-600 shadow-sm text-sm font-medium rounded-lg text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-200"
+          className={`${styles.secondaryComfortableButton} ${styles.comfortableButton} inline-flex items-center px-5 py-3 border border-gray-300 dark:border-gray-600 shadow-sm text-sm font-medium rounded-lg text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-200`}
         >
           <FontAwesomeIcon icon={faArrowLeft} className="mr-2" />
           Back
@@ -442,7 +451,7 @@ const PaymentForm = ({ eventDetails, quantity, totalPrice, onSuccess, onCancel }
           whileTap={{ scale: 0.98 }}
           type="submit"
           disabled={!stripe || loading}
-          className="inline-flex items-center px-5 py-3 border border-transparent shadow-sm text-sm font-medium rounded-lg text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+          className={`${styles.primaryComfortableButton} ${styles.comfortableButton} inline-flex items-center px-5 py-3 border border-transparent shadow-sm text-sm font-medium rounded-lg text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200`}
         >
           {loading ? (
             <>
@@ -487,6 +496,12 @@ const Checkout = () => {
       price = event.price
     } else if (typeof event.price === "string" && !isNaN(Number.parseFloat(event.price))) {
       price = Number.parseFloat(event.price)
+    } else if (event.price) {
+      // Try to extract a number from the price if it's in a format like "$25.99"
+      const priceMatch = event.price.toString().match(/\d+(\.\d+)?/)
+      if (priceMatch) {
+        price = Number.parseFloat(priceMatch[0])
+      }
     }
 
     // Ensure quantity is a valid number
@@ -582,10 +597,12 @@ const Checkout = () => {
 
   if (loading) {
     return (
-      <div className="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 min-h-screen py-12">
+      <div
+        className={`${styles.gradientBackground} bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 min-h-screen py-12`}
+      >
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col items-center justify-center py-12">
-            <div className="w-16 h-16 relative">
+            <div className={`w-16 h-16 relative ${styles.rotatingLoader}`}>
               <div className="absolute top-0 left-0 w-full h-full border-4 border-indigo-200 dark:border-indigo-900 rounded-full animate-pulse"></div>
               <div className="absolute top-0 left-0 w-full h-full border-4 border-transparent border-t-indigo-600 dark:border-t-indigo-400 rounded-full animate-spin"></div>
             </div>
@@ -598,16 +615,21 @@ const Checkout = () => {
 
   if (error || !event) {
     return (
-      <div className="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 min-h-screen py-12">
+      <div
+        className={`${styles.gradientBackground} bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 min-h-screen py-12`}
+      >
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="flex flex-col items-center justify-center py-12"
+            className={`flex flex-col items-center justify-center py-12 ${styles.fadeInUp}`}
           >
             <div className="w-20 h-20 bg-yellow-100 dark:bg-yellow-900/30 rounded-full flex items-center justify-center mb-6">
-              <FontAwesomeIcon icon={faExclamationTriangle} className="text-yellow-500 text-3xl" />
+              <FontAwesomeIcon
+                icon={faExclamationTriangle}
+                className={`text-yellow-500 text-3xl ${styles.warningAccent}`}
+              />
             </div>
             <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-3">Event Not Found</h2>
             <p className="text-gray-600 dark:text-gray-400 mb-8 text-center max-w-md">
@@ -618,7 +640,7 @@ const Checkout = () => {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => navigate("/events")}
-              className="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors shadow-lg hover:shadow-xl flex items-center"
+              className={`${styles.primaryButton} px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors shadow-lg hover:shadow-xl flex items-center`}
             >
               Browse Events
               <svg
@@ -638,47 +660,86 @@ const Checkout = () => {
   }
 
   return (
-    <div className="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 min-h-screen py-12">
+    <div
+      className={`${styles.softGradientBackground} ${window.document.documentElement.classList.contains("dark") ? styles.darkSoftGradientBackground : ""} min-h-screen py-12`}
+    >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         {/* Checkout header */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="mb-8"
+          className={`mb-8 ${styles.fadeInDown}`}
         >
-          <h2 className="text-3xl pt-20 font-bold text-gray-900 dark:text-white mb-6 flex items-center">
-            <div className="w-12 h-12 bg-indigo-100 dark:bg-indigo-900/30 rounded-full flex items-center justify-center mr-4">
-              <FontAwesomeIcon icon={faTicketAlt} className="text-indigo-600 dark:text-indigo-400 text-xl" />
+          <h2
+            className={`text-3xl pt-20 font-bold text-gray-900 dark:text-white mb-6 flex items-center ${styles.gradientText}`}
+          >
+            <div
+              className={`w-12 h-12 bg-indigo-100 dark:bg-indigo-900/30 rounded-full flex items-center justify-center mr-4 ${styles.floating}`}
+            >
+              <FontAwesomeIcon
+                icon={faTicketAlt}
+                className={`text-indigo-600 dark:text-indigo-400 text-xl ${styles.primaryAccent}`}
+              />
             </div>
             {step === "confirmation" ? "Booking Confirmation" : "Secure Checkout"}
           </h2>
 
           {step !== "confirmation" && (
-            <div className="flex items-center justify-center md:justify-start">
-              <div
-                className={`flex flex-col md:flex-row items-center ${step === "details" ? "text-indigo-600 dark:text-indigo-400" : "text-gray-500 dark:text-gray-400"
-                  }`}
-              >
-                <div className="rounded-full h-10 w-10 flex items-center justify-center border-2 border-current">1</div>
+            <div className={`flex items-center justify-center md:justify-start ${styles.stepIndicator}`}>
+              <div className={`flex flex-col md:flex-row items-center`}>
+                <div
+                  className={`${styles.stepCircle} ${step === "details"
+                    ? styles.stepActive
+                    : step === "payment" || step === "confirmation"
+                      ? styles.stepCompleted
+                      : styles.stepInactive
+                    }`}
+                >
+                  {step === "payment" || step === "confirmation" ? "✓" : "1"}
+                </div>
                 <span className="ml-2 font-medium mt-1 md:mt-0">Event Details</span>
               </div>
-              <div className="hidden md:block h-1 w-12 mx-3 bg-gray-300 dark:bg-gray-700"></div>
-              <div className="md:hidden h-12 w-1 mx-3 my-1 bg-gray-300 dark:bg-gray-700"></div>
+
               <div
-                className={`flex flex-col md:flex-row items-center ${step === "payment" ? "text-indigo-600 dark:text-indigo-400" : "text-gray-500 dark:text-gray-400"
+                className={`hidden md:block h-1 w-16 mx-3 ${step === "payment" || step === "confirmation" ? styles.stepConnectorCompleted : styles.stepConnector
                   }`}
-              >
-                <div className="rounded-full h-10 w-10 flex items-center justify-center border-2 border-current">2</div>
+              ></div>
+              <div
+                className={`md:hidden h-12 w-1 mx-3 my-1 ${step === "payment" || step === "confirmation" ? styles.stepConnectorCompleted : styles.stepConnector
+                  }`}
+              ></div>
+
+              <div className={`flex flex-col md:flex-row items-center`}>
+                <div
+                  className={`${styles.stepCircle} ${step === "payment"
+                    ? styles.stepActive
+                    : step === "confirmation"
+                      ? styles.stepCompleted
+                      : styles.stepInactive
+                    }`}
+                >
+                  {step === "confirmation" ? "✓" : "2"}
+                </div>
                 <span className="ml-2 font-medium mt-1 md:mt-0">Payment</span>
               </div>
-              <div className="hidden md:block h-1 w-12 mx-3 bg-gray-300 dark:bg-gray-700"></div>
-              <div className="md:hidden h-12 w-1 mx-3 my-1 bg-gray-300 dark:bg-gray-700"></div>
+
               <div
-                className={`flex flex-col md:flex-row items-center ${step === "confirmation" ? "text-indigo-600 dark:text-indigo-400" : "text-gray-500 dark:text-gray-400"
+                className={`hidden md:block h-1 w-16 mx-3 ${step === "confirmation" ? styles.stepConnectorCompleted : styles.stepConnector
                   }`}
-              >
-                <div className="rounded-full h-10 w-10 flex items-center justify-center border-2 border-current">3</div>
+              ></div>
+              <div
+                className={`md:hidden h-12 w-1 mx-3 my-1 ${step === "confirmation" ? styles.stepConnectorCompleted : styles.stepConnector
+                  }`}
+              ></div>
+
+              <div className={`flex flex-col md:flex-row items-center`}>
+                <div
+                  className={`${styles.stepCircle} ${step === "confirmation" ? styles.stepActive : styles.stepInactive
+                    }`}
+                >
+                  3
+                </div>
                 <span className="ml-2 font-medium mt-1 md:mt-0">Confirmation</span>
               </div>
             </div>
@@ -692,68 +753,82 @@ const Checkout = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              className="bg-white dark:bg-gray-800 rounded-xl shadow-xl overflow-hidden"
+              className={`${window.document.documentElement.classList.contains("dark") ? styles.darkCardBackground : styles.cardBackground} bg-white dark:bg-gray-800 rounded-xl shadow-xl overflow-hidden ${styles.card3d}`}
             >
               {step === "details" && (
                 <div>
-                  <div className="relative h-48 md:h-64 overflow-hidden">
+                  <div
+                    className={`relative h-48 md:h-64 overflow-hidden ${styles.imageContainer} ${styles.imageShine}`}
+                  >
                     <img
                       src={event.image_path || event.image || "/placeholder.svg?height=400&width=800"}
                       alt={event.name}
                       className="w-full h-full object-cover transform hover:scale-105 transition-transform duration-700"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
+                    <div
+                      className={`absolute inset-0 bg-gradient-to-t from-black/70 to-transparent ${styles.imageOverlay}`}
+                    ></div>
                     <div className="absolute bottom-0 left-0 p-6">
                       {event.category && (
                         <span className="inline-block bg-indigo-600 text-white text-xs font-semibold px-2.5 py-1 rounded mb-2">
                           {event.category}
                         </span>
                       )}
-                      <h3 className="text-2xl font-bold text-white">{event.name}</h3>
+                      <h3 className={`text-2xl font-bold text-white ${styles.gradientText}`}>{event.name}</h3>
                     </div>
                   </div>
 
                   <div className="p-6">
-                    <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Event Details</h3>
+                    <h3 className={`text-xl font-bold text-gray-900 dark:text-white mb-4 ${styles.gradientText}`}>
+                      Event Details
+                    </h3>
                     <div className="flex flex-col md:flex-row gap-6 mb-6">
                       <div className="md:w-2/3">
                         <p className="text-gray-600 dark:text-gray-300 mb-4 leading-relaxed">{event.description}</p>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
-                          <div className="flex items-center p-3 bg-indigo-50 dark:bg-indigo-900/20 rounded-lg">
+                        <div className={`grid grid-cols-1 md:grid-cols-2 gap-4 mt-6 ${styles.staggeredFadeIn}`}>
+                          <div
+                            className={`flex items-center p-3 bg-indigo-50 dark:bg-indigo-900/20 rounded-lg ${styles.hoverLift}`}
+                          >
                             <FontAwesomeIcon
                               icon={faCalendarAlt}
-                              className="w-5 h-5 mr-3 text-indigo-600 dark:text-indigo-400"
+                              className={`w-5 h-5 mr-3 text-indigo-600 dark:text-indigo-400 ${styles.primaryAccent}`}
                             />
                             <div>
                               <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300">Date & Time</h4>
                               <p className="text-gray-900 dark:text-white font-medium">{event.date}</p>
                             </div>
                           </div>
-                          <div className="flex items-center p-3 bg-indigo-50 dark:bg-indigo-900/20 rounded-lg">
+                          <div
+                            className={`flex items-center p-3 bg-indigo-50 dark:bg-indigo-900/20 rounded-lg ${styles.hoverLift}`}
+                          >
                             <FontAwesomeIcon
                               icon={faMapMarkerAlt}
-                              className="w-5 h-5 mr-3 text-indigo-600 dark:text-indigo-400"
+                              className={`w-5 h-5 mr-3 text-indigo-600 dark:text-indigo-400 ${styles.primaryAccent}`}
                             />
                             <div>
                               <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300">Location</h4>
                               <p className="text-gray-900 dark:text-white font-medium">{event.location}</p>
                             </div>
                           </div>
-                          <div className="flex items-center p-3 bg-indigo-50 dark:bg-indigo-900/20 rounded-lg">
+                          <div
+                            className={`flex items-center p-3 bg-indigo-50 dark:bg-indigo-900/20 rounded-lg ${styles.hoverLift}`}
+                          >
                             <FontAwesomeIcon
                               icon={faClock}
-                              className="w-5 h-5 mr-3 text-indigo-600 dark:text-indigo-400"
+                              className={`w-5 h-5 mr-3 text-indigo-600 dark:text-indigo-400 ${styles.primaryAccent}`}
                             />
                             <div>
                               <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300">Duration</h4>
                               <p className="text-gray-900 dark:text-white font-medium">3 hours</p>
                             </div>
                           </div>
-                          <div className="flex items-center p-3 bg-indigo-50 dark:bg-indigo-900/20 rounded-lg">
+                          <div
+                            className={`flex items-center p-3 bg-indigo-50 dark:bg-indigo-900/20 rounded-lg ${styles.hoverLift}`}
+                          >
                             <FontAwesomeIcon
                               icon={faTag}
-                              className="w-5 h-5 mr-3 text-indigo-600 dark:text-indigo-400"
+                              className={`w-5 h-5 mr-3 text-indigo-600 dark:text-indigo-400 ${styles.primaryAccent}`}
                             />
                             <div>
                               <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300">Price</h4>
@@ -767,8 +842,13 @@ const Checkout = () => {
                     </div>
 
                     <div className="border-t border-gray-200 dark:border-gray-700 pt-6">
-                      <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4 flex items-center">
-                        <FontAwesomeIcon icon={faTicketAlt} className="mr-3 text-indigo-600 dark:text-indigo-400" />
+                      <h3
+                        className={`text-xl font-bold text-gray-900 dark:text-white mb-4 flex items-center ${styles.gradientText}`}
+                      >
+                        <FontAwesomeIcon
+                          icon={faTicketAlt}
+                          className={`mr-3 text-indigo-600 dark:text-indigo-400 ${styles.primaryAccent}`}
+                        />
                         Ticket Information
                       </h3>
 
@@ -785,7 +865,7 @@ const Checkout = () => {
                             whileTap={{ scale: 0.9 }}
                             onClick={() => handleQuantityChange(quantity - 1)}
                             disabled={quantity <= 1}
-                            className="p-3 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 rounded-l-lg hover:bg-indigo-200 dark:hover:bg-indigo-800/30 disabled:opacity-50 transition-colors duration-200"
+                            className={`${styles.secondaryButton} p-3 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 rounded-l-lg hover:bg-indigo-200 dark:hover:bg-indigo-800/30 disabled:opacity-50 transition-colors duration-200`}
                           >
                             <FontAwesomeIcon icon={faMinus} className="w-4 h-4" />
                           </motion.button>
@@ -806,13 +886,16 @@ const Checkout = () => {
                             whileTap={{ scale: 0.9 }}
                             onClick={() => handleQuantityChange(quantity + 1)}
                             disabled={quantity >= event.available_tickets}
-                            className="p-3 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 rounded-r-lg hover:bg-indigo-200 dark:hover:bg-indigo-800/30 disabled:opacity-50 transition-colors duration-200"
+                            className={`${styles.secondaryButton} p-3 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 rounded-r-lg hover:bg-indigo-200 dark:hover:bg-indigo-800/30 disabled:opacity-50 transition-colors duration-200`}
                           >
                             <FontAwesomeIcon icon={faPlus} className="w-4 h-4" />
                           </motion.button>
                         </div>
                         <p className="mt-2 text-sm text-gray-500 dark:text-gray-400 flex items-center">
-                          <FontAwesomeIcon icon={faInfoCircle} className="mr-2 text-indigo-500" />
+                          <FontAwesomeIcon
+                            icon={faInfoCircle}
+                            className={`mr-2 text-indigo-500 ${styles.primaryAccent}`}
+                          />
                           {event.available_tickets} tickets available
                         </p>
                       </div>
@@ -822,7 +905,7 @@ const Checkout = () => {
                           whileHover={{ scale: 1.02 }}
                           whileTap={{ scale: 0.98 }}
                           onClick={handleBackToEvent}
-                          className="inline-flex items-center justify-center px-5 py-3 border border-gray-300 dark:border-gray-600 shadow-sm text-sm font-medium rounded-lg text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-200"
+                          className={`${styles.secondaryButton} inline-flex items-center justify-center px-5 py-3 border border-gray-300 dark:border-gray-600 shadow-sm text-sm font-medium rounded-lg text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-200`}
                         >
                           <FontAwesomeIcon icon={faArrowLeft} className="mr-2" />
                           Back to Event
@@ -831,7 +914,7 @@ const Checkout = () => {
                           whileHover={{ scale: 1.02 }}
                           whileTap={{ scale: 0.98 }}
                           onClick={() => setStep("payment")}
-                          className="inline-flex items-center justify-center px-5 py-3 border border-transparent shadow-sm text-sm font-medium rounded-lg text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-200"
+                          className={`${styles.primaryButton} inline-flex items-center justify-center px-5 py-3 border border-transparent shadow-sm text-sm font-medium rounded-lg text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-200`}
                         >
                           Continue to Payment
                           <FontAwesomeIcon icon={faCreditCard} className="ml-2" />
@@ -862,12 +945,19 @@ const Checkout = () => {
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ duration: 0.5 }}
-                    className="text-center py-8"
+                    className={`text-center py-8 ${styles.fadeInUp}`}
                   >
-                    <div className="w-20 h-20 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-6">
-                      <FontAwesomeIcon icon={faCheckCircle} className="text-green-500 text-4xl" />
+                    <div
+                      className={`w-20 h-20 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-6 ${styles.successIcon}`}
+                    >
+                      <FontAwesomeIcon
+                        icon={faCheckCircle}
+                        className={`text-green-500 text-4xl ${styles.successAccent}`}
+                      />
                     </div>
-                    <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Booking Confirmed!</h3>
+                    <h3 className={`text-2xl font-bold text-gray-900 dark:text-white mb-2 ${styles.gradientText}`}>
+                      Booking Confirmed!
+                    </h3>
                     <p className="text-gray-600 dark:text-gray-300 mb-8 max-w-md mx-auto">
                       Thank you for your purchase. Your tickets have been booked successfully and are ready for use.
                     </p>
@@ -876,14 +966,19 @@ const Checkout = () => {
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.3, duration: 0.5 }}
-                      className="bg-indigo-50 dark:bg-indigo-900/20 rounded-lg p-6 mb-8 text-left max-w-lg mx-auto"
+                      className={`bg-indigo-50 dark:bg-indigo-900/20 rounded-lg p-6 mb-8 text-left max-w-lg mx-auto ${styles.cardBackground}`}
                     >
-                      <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
-                        <FontAwesomeIcon icon={faTicketAlt} className="mr-3 text-indigo-600 dark:text-indigo-400" />
+                      <h4
+                        className={`text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center ${styles.gradientText}`}
+                      >
+                        <FontAwesomeIcon
+                          icon={faTicketAlt}
+                          className={`mr-3 text-indigo-600 dark:text-indigo-400 ${styles.primaryAccent}`}
+                        />
                         Booking Details
                       </h4>
 
-                      <div className="space-y-3">
+                      <div className={`space-y-3 ${styles.staggeredFadeIn}`}>
                         <div className="flex justify-between border-b border-indigo-100 dark:border-indigo-800/30 pb-2">
                           <span className="text-gray-600 dark:text-gray-300">Event:</span>
                           <span className="font-medium text-gray-900 dark:text-white">{event.name}</span>
@@ -918,7 +1013,7 @@ const Checkout = () => {
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                         onClick={handleViewTickets}
-                        className="inline-flex items-center justify-center px-6 py-3 border border-transparent shadow-lg text-sm font-medium rounded-lg text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-200"
+                        className={`${styles.primaryButton} inline-flex items-center justify-center px-6 py-3 border border-transparent shadow-lg text-sm font-medium rounded-lg text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-200`}
                       >
                         <FontAwesomeIcon icon={faTicketAlt} className="mr-2" />
                         View My Tickets
@@ -927,7 +1022,7 @@ const Checkout = () => {
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                         onClick={() => navigate("/events")}
-                        className="inline-flex items-center justify-center px-6 py-3 border border-gray-300 dark:border-gray-600 shadow-md text-sm font-medium rounded-lg text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-200"
+                        className={`${styles.secondaryButton} inline-flex items-center justify-center px-6 py-3 border border-gray-300 dark:border-gray-600 shadow-md text-sm font-medium rounded-lg text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-200`}
                       >
                         Browse More Events
                       </motion.button>
@@ -944,16 +1039,23 @@ const Checkout = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.4 }}
-              className="bg-white dark:bg-gray-800 rounded-xl shadow-xl p-6 sticky top-6"
+              className={`${window.document.documentElement.classList.contains("dark") ? styles.darkOrderSummary : styles.orderSummary} bg-white dark:bg-gray-800 rounded-xl shadow-xl p-6 sticky top-6 ${styles.fadeInRight}`}
             >
-              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-6 flex items-center">
-                <div className="w-8 h-8 bg-indigo-100 dark:bg-indigo-900/30 rounded-full flex items-center justify-center mr-3">
-                  <FontAwesomeIcon icon={faShoppingCart} className="text-indigo-600 dark:text-indigo-400" />
+              <h3
+                className={`text-xl font-bold text-gray-900 dark:text-white mb-6 flex items-center ${styles.gradientText}`}
+              >
+                <div
+                  className={`w-8 h-8 bg-indigo-100 dark:bg-indigo-900/30 rounded-full flex items-center justify-center mr-3 ${styles.floating}`}
+                >
+                  <FontAwesomeIcon
+                    icon={faShoppingCart}
+                    className={`text-indigo-600 dark:text-indigo-400 ${styles.primaryAccent}`}
+                  />
                 </div>
                 Order Summary
               </h3>
 
-              <div className="space-y-4 mb-6">
+              <div className={`space-y-4 mb-6 ${styles.staggeredFadeIn}`}>
                 <AnimatePresence mode="wait">
                   <motion.div
                     key={`price-${quantity}`}
@@ -962,17 +1064,22 @@ const Checkout = () => {
                     exit={{ opacity: 0, height: 0 }}
                     transition={{ duration: 0.3 }}
                   >
-                    <div className="flex justify-between items-center">
+                    <div className={`flex justify-between items-center ${styles.summaryRow}`}>
                       <span className="text-gray-600 dark:text-gray-300">Ticket Price:</span>
                       <span className="font-medium text-gray-900 dark:text-white">
-                        ${typeof event.price === "number" ? event.price.toFixed(2) : "0.00"}
+                        $
+                        {event && event.price
+                          ? typeof event.price === "number"
+                            ? event.price.toFixed(2)
+                            : Number.parseFloat(event.price).toFixed(2)
+                          : "0.00"}
                       </span>
                     </div>
-                    <div className="flex justify-between items-center mt-2">
+                    <div className={`flex justify-between items-center mt-2 ${styles.summaryRow}`}>
                       <span className="text-gray-600 dark:text-gray-300">Quantity:</span>
                       <span className="font-medium text-gray-900 dark:text-white">{quantity}</span>
                     </div>
-                    <div className="flex justify-between items-center mt-2">
+                    <div className={`flex justify-between items-center mt-2 ${styles.summaryRow}`}>
                       <span className="text-gray-600 dark:text-gray-300">Subtotal:</span>
                       <AnimatePresence mode="wait">
                         <motion.span
@@ -987,7 +1094,7 @@ const Checkout = () => {
                         </motion.span>
                       </AnimatePresence>
                     </div>
-                    <div className="flex justify-between items-center mt-2">
+                    <div className={`flex justify-between items-center mt-2 ${styles.summaryRow}`}>
                       <span className="text-gray-600 dark:text-gray-300 flex items-center">
                         Service Fee:
                         <span className="group relative ml-1">
@@ -1014,7 +1121,9 @@ const Checkout = () => {
                 </AnimatePresence>
               </div>
 
-              <div className="border-t border-gray-200 dark:border-gray-700 pt-4 mb-6">
+              <div
+                className={`border-t border-gray-200 dark:border-gray-700 pt-4 mb-6 ${styles.summaryTotal} ${window.document.documentElement.classList.contains("dark") ? styles.darkSummaryTotal : ""}`}
+              >
                 <div className="flex justify-between items-center">
                   <span className="text-lg font-semibold text-gray-900 dark:text-white">Total:</span>
                   <AnimatePresence mode="wait">
@@ -1025,7 +1134,7 @@ const Checkout = () => {
                       animate={{ opacity: 1, scale: 1 }}
                       exit={{ opacity: 0, scale: 0.8 }}
                       transition={{ duration: 0.3 }}
-                      className="text-xl font-bold text-indigo-600 dark:text-indigo-400"
+                      className={`text-xl font-bold text-indigo-600 dark:text-indigo-400 ${styles.totalPrice}`}
                     >
                       ${typeof finalTotal === "number" ? finalTotal.toFixed(2) : "0.00"}
                     </motion.span>
@@ -1033,9 +1142,12 @@ const Checkout = () => {
                 </div>
               </div>
 
-              <div className="bg-indigo-50 dark:bg-indigo-900/20 rounded-lg p-4 mb-6">
+              <div className={`${styles.cardBackground} bg-indigo-50 dark:bg-indigo-900/20 rounded-lg p-4 mb-6`}>
                 <div className="flex items-start">
-                  <FontAwesomeIcon icon={faShield} className="text-indigo-600 dark:text-indigo-400 mt-1 mr-3" />
+                  <FontAwesomeIcon
+                    icon={faShield}
+                    className={`text-indigo-600 dark:text-indigo-400 mt-1 mr-3 ${styles.primaryAccent}`}
+                  />
                   <div>
                     <h4 className="text-sm font-semibold text-indigo-800 dark:text-indigo-300 mb-1">Secure Checkout</h4>
                     <p className="text-xs text-indigo-700 dark:text-indigo-400">
@@ -1045,16 +1157,23 @@ const Checkout = () => {
                 </div>
               </div>
 
-              <div className="space-y-4">
+              <div className={`space-y-4 ${styles.staggeredFadeIn}`}>
                 <h4 className="text-sm font-semibold text-gray-900 dark:text-white">Event Information</h4>
-                <div className="flex items-center text-sm text-gray-600 dark:text-gray-300 bg-gray-50 dark:bg-gray-700/50 p-3 rounded-lg">
-                  <FontAwesomeIcon icon={faCalendarAlt} className="w-4 h-4 mr-3 text-indigo-600 dark:text-indigo-400" />
+                <div
+                  className={`flex items-center text-sm text-gray-600 dark:text-gray-300 bg-gray-50 dark:bg-gray-700/50 p-3 rounded-lg ${styles.hoverLift}`}
+                >
+                  <FontAwesomeIcon
+                    icon={faCalendarAlt}
+                    className={`w-4 h-4 mr-3 text-indigo-600 dark:text-indigo-400 ${styles.primaryAccent}`}
+                  />
                   <span>{event.date}</span>
                 </div>
-                <div className="flex items-center text-sm text-gray-600 dark:text-gray-300 bg-gray-50 dark:bg-gray-700/50 p-3 rounded-lg">
+                <div
+                  className={`flex items-center text-sm text-gray-600 dark:text-gray-300 bg-gray-50 dark:bg-gray-700/50 p-3 rounded-lg ${styles.hoverLift}`}
+                >
                   <FontAwesomeIcon
                     icon={faMapMarkerAlt}
-                    className="w-4 h-4 mr-3 text-indigo-600 dark:text-indigo-400"
+                    className={`w-4 h-4 mr-3 text-indigo-600 dark:text-indigo-400 ${styles.primaryAccent}`}
                   />
                   <span>{event.location}</span>
                 </div>
