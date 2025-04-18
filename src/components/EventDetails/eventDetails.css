@@ -126,3 +126,46 @@
   opacity: 0;
   transition: opacity 300ms;
 }
+/* Share button styles */
+.react-share__ShareButton {
+  outline: none;
+  transition: transform 0.2s ease;
+}
+
+.react-share__ShareButton:hover {
+  transform: scale(1.1);
+}
+
+/* Share dropdown animation */
+.share-dropdown-enter {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+.share-dropdown-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: all 0.2s ease-out;
+}
+.share-dropdown-exit {
+  opacity: 1;
+  transform: translateY(0);
+}
+.share-dropdown-exit-active {
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: all 0.2s ease-in;
+}
+.share-container {
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Icon hover effects */
+.share-icon {
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.share-icon:hover {
+  transform: scale(1.1);
+  opacity: 1 !important;
+}

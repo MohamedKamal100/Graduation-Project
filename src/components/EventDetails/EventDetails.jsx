@@ -26,6 +26,7 @@ import { useState, useEffect, useRef } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import ReviewStars from "../ReviewStars/ReviewStars"
 import RelatedEvents from "../RelatedEvents/RelatedEvents"
+import ShareButton from '../ui/ShareButton';
 import "./eventDetails.css"
 
 const EventDetails = () => {
@@ -282,18 +283,7 @@ const EventDetails = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 }}
               >
-                <motion.button
-                  className="bg-white/90 dark:bg-gray-800/90 hover:bg-white dark:hover:bg-gray-800 text-gray-800 dark:text-gray-200 p-3 rounded-full transition-all duration-300 shadow-lg hover:shadow-xl"
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    navigator.clipboard.writeText(window.location.href)
-                    toast.info("Link copied to clipboard!")
-                  }}
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.9 }}
-                >
-                  <FontAwesomeIcon icon={faShare} className="w-5 h-5" />
-                </motion.button>
+
 
                 <motion.button
                   className={`bg-white/90 dark:bg-gray-800/90 hover:bg-white dark:hover:bg-gray-800 p-3 rounded-full transition-all duration-300 shadow-lg hover:shadow-xl ${isLoved ? "text-red-500" : "text-gray-800 dark:text-gray-200"} ${isBookmarkLoading ? "opacity-80 cursor-wait" : ""}`}
@@ -582,9 +572,17 @@ const EventDetails = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
         >
-          <h2 className="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600 mb-4">
-            Additional Information
-          </h2>
+          <div className="flex-row flex justify-between">
+            <h2 className="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600 mb-4">
+              Additional Information
+            </h2>
+            <motion.button
+              className="bg-white/90 dark:bg-gray-800/90 hover:bg-white dark:hover:bg-gray-800 text-gray-800 dark:text-gray-200 p-3 rounded-full transition-all duration-300 shadow-lg hover:shadow-xl"
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+            >
+              <ShareButton event={event} />
+            </motion.button></div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <motion.div
               className="flex items-start"
@@ -637,6 +635,7 @@ const EventDetails = () => {
             <FontAwesomeIcon icon={faArrowLeft} className="w-5 h-5 mr-2" />
             Back to Events
           </motion.button>
+
         </div>
       </div>
     </motion.div>
