@@ -1,67 +1,114 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
-import { BeatLoader } from "react-spinners";
+import { motion } from "framer-motion"
+import { Link } from "react-router-dom"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faCalendarAlt, faMapMarkerAlt, faArrowRight } from "@fortawesome/free-solid-svg-icons"
 
-export default function RelatedEvents({ categoryId, currentEventId }) {
-  const [relatedEvents, setRelatedEvents] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
+const RelatedEvents = ({ events }) => {
+  if (!events || events.length === 0) return null
 
-  async function getRelatedEvents(categoryId) {
-    try {
-      const { data } = await axios.get(`http://127.0.0.1:8000/api/events?category=${categoryId}`);
-      setRelatedEvents(data.filter((event) => event._id !== currentEventId));
-    } catch (error) {
-      console.error("Error fetching related events:", error);
-    } finally {
-      setLoading(false);
-    }
+  // Animation variants
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+      },
+    },
   }
 
-  useEffect(() => {
-    if (categoryId) {
-      getRelatedEvents(categoryId);
-    }
-  }, [categoryId]);
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        type: "spring",
+        stiffness: 100,
+        damping: 10,
+      },
+    },
+  }
 
-  function handleEventClick(eventId) {
-    navigate(`/event/${eventId}`);
+  // Function to get image URL
+  const getImageUrl = (imagePath) => {
+    if (!imagePath) return "/placeholder.svg"
+
+    if (imagePath.startsWith("http")) {
+      return imagePath
+    }
+
+    return `http://127.0.0.1:8000${imagePath}`
+  }
+
+  // Function to handle image error
+  const handleImageError = (e) => {
+    e.target.onerror = null
+    e.target.src = "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?q=80&w=2070&auto=format&fit=crop"
   }
 
   return (
-    <>
-      {relatedEvents.length > 0 && (
-        <>
-          <h2 className="text-3xl font-bold mt-16 mb-6 text-center md:text-left">
-            <span className="border-b-4 border-emerald-500 pb-1 text-gray-800">Related Events</span>
-          </h2>
-          <div className="gap-y-2 grid grid-cols-2 md:grid-cols-4 gap-6 animate-fadeIn">
-            {relatedEvents.map((event) => (
-              <div
-                key={event._id}
-                className="cursor-pointer bg-white shadow-md rounded-xl overflow-hidden transition-all duration-300 hover:shadow-xl hover:translate-y-[-8px] flex flex-col"
-                onClick={() => handleEventClick(event._id)}
-              >
-                <div className="relative">
-                  <img
-                    src={event.imageCover || "/placeholder.svg"}
-                    alt={event.name}
-                    className="w-full h-48 object-cover"
-                  />
-                  <div className="absolute top-3 right-3 bg-white/80 backdrop-blur-sm rounded-full px-2 py-1 text-xs font-bold text-emerald-600">
-                    ${event.price}
+    <motion.div
+      className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden p-6 mb-8"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.4 }}
+      variants={containerVariants}
+    >
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600">
+          Related Events
+        </h2>
+        <Link
+          to="/events"
+          className="text-sm text-purple-600 dark:text-purple-400 hover:text-purple-800 dark:hover:text-purple-300 flex items-center"
+        >
+          View All
+          <FontAwesomeIcon icon={faArrowRight} className="ml-1 w-3 h-3" />
+        </Link>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+        {events.map((event, index) => (
+          <motion.div
+            key={event.id}
+            className="bg-gray-50 dark:bg-gray-700 rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1"
+            variants={itemVariants}
+            whileHover={{ scale: 1.03 }}
+          >
+            <Link to={`/eventDetails/${event.id}`} className="block">
+              <div className="relative h-32 overflow-hidden">
+                <img
+                  src={getImageUrl(event.image_path || event.image)}
+                  alt={event.name || event.title}
+                  className="w-full h-full object-cover"
+                  onError={handleImageError}
+                />
+                {event.category && (
+                  <div className="absolute top-2 left-2 bg-purple-600/80 text-white text-xs px-2 py-0.5 rounded-full">
+                    {event.category}
                   </div>
+                )}
+              </div>
+              <div className="p-3">
+                <h3 className="font-medium text-gray-900 dark:text-white text-sm mb-1 line-clamp-1">
+                  {event.name || event.title}
+                </h3>
+                <div className="flex items-center text-xs text-gray-600 dark:text-gray-300 mb-1">
+                  <FontAwesomeIcon icon={faCalendarAlt} className="w-3 h-3 mr-1" />
+                  <span>{event.date || event.event_date || "TBA"}</span>
                 </div>
-                <div className="p-4">
-                  <h3 className="text-lg font-semibold text-gray-800 line-clamp-1">{event.name}</h3>
-                  <p className="text-emerald-600 font-bold mt-2">${event.price}</p>
+                <div className="flex items-center text-xs text-gray-600 dark:text-gray-300">
+                  <FontAwesomeIcon icon={faMapMarkerAlt} className="w-3 h-3 mr-1" />
+                  <span className="line-clamp-1">{event.location || "TBA"}</span>
                 </div>
               </div>
-            ))}
-          </div>
-        </>
-      )}
-    </>
-  );
+            </Link>
+          </motion.div>
+        ))}
+      </div>
+    </motion.div>
+  )
 }
+
+export default RelatedEvents
