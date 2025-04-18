@@ -242,99 +242,141 @@ const EventDetails = () => {
     >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
-          className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden mb-8"
+          className="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl overflow-hidden mb-8"
           variants={containerVariants}
           initial="hidden"
           animate="visible"
         >
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-0">
+          <div className="grid grid-cols-1  md:grid-cols-2 gap-1">
             {/* Updated Image Section */}
-            <div
-              className="relative group cursor-pointer"
-              style={{ height: "300px" }}
-              onClick={handleImageClick}
-              onMouseEnter={() => setIsImageHovered(true)}
-              onMouseLeave={() => setIsImageHovered(false)}
-            >
-              <div className="relative h-full w-full overflow-hidden">
-                <img
-                  src={getImageUrl(event.image_path || event.image)}
-                  alt={event.name || event.title}
-                  className="w-full h-full object-contain"
-                  onError={handleImageError}
-                />
-
-                {/* Light Outline Effect */}
-                <div className={`absolute inset-0 border-4 transition-all duration-300 ${isImageHovered ? "border-white/30" : "border-transparent"}`}></div>
-
-                {/* Gradient Overlay */}
-                <div className={`absolute inset-0 bg-gradient-to-b from-black/10 via-black/30 to-black/60 transition-opacity duration-300 ${isImageHovered ? "opacity-90" : "opacity-80"}`}></div>
-
-                {/* Shine Effect */}
-                <div className="absolute inset-0 overflow-hidden">
-                  <div className={`absolute top-0 left-0 w-full h-full bg-gradient-to-r from-transparent via-white/30 to-transparent transition-opacity duration-300 transform ${isImageHovered ? "opacity-100 translate-x-full" : "opacity-0 -translate-x-full"}`}></div>
-                </div>
-              </div>
-
-              {/* Overlay buttons */}
-              <motion.div
-                className="absolute top-4 right-4 flex space-x-3 z-10"
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 }}
+            <div>
+              <div
+                className="relative group cursor-pointer"
+                style={{ height: "300px" }}
+                onClick={handleImageClick}
+                onMouseEnter={() => setIsImageHovered(true)}
+                onMouseLeave={() => setIsImageHovered(false)}
               >
+                <div className="relative h-full w-full overflow-hidden">
+                  <img
+                    src={getImageUrl(event.image_path || event.image)}
+                    alt={event.name || event.title}
+                    className="w-full h-full object-contain"
+                    onError={handleImageError}
+                  />
 
+                  {/* Light Outline Effect */}
+                  <div className={`absolute inset-0 border-4 transition-all duration-300 ${isImageHovered ? "border-white/30" : "border-transparent"}`}></div>
+
+                  {/* Gradient Overlay */}
+                  <div className={`absolute inset-0 bg-gradient-to-b from-black/10 via-black/30 to-black/60 transition-opacity duration-300 ${isImageHovered ? "opacity-90" : "opacity-80"}`}></div>
+
+                  {/* Shine Effect */}
+                  <div className="absolute inset-0 overflow-hidden">
+                    <div className={`absolute top-0 left-0 w-full h-full bg-gradient-to-r from-transparent via-white/30 to-transparent transition-opacity duration-300 transform ${isImageHovered ? "opacity-100 translate-x-full" : "opacity-0 -translate-x-full"}`}></div>
+                  </div>
+                </div>
+
+                {/* Overlay buttons */}
+                <motion.div
+                  className="absolute top-4 right-4 flex space-x-3 z-10"
+                  initial={{ opacity: 0, y: -20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3 }}
+                >
+
+
+                  <motion.button
+                    className={`bg-white/90 dark:bg-gray-800/90 hover:bg-white dark:hover:bg-gray-800 p-3 rounded-full transition-all duration-300 shadow-lg hover:shadow-xl ${isLoved ? "text-red-500" : "text-gray-800 dark:text-gray-200"} ${isBookmarkLoading ? "opacity-80 cursor-wait" : ""}`}
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      handleLoveClick()
+                    }}
+                    disabled={isBookmarkLoading}
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                  >
+                    {isBookmarkLoading ? (
+                      <FontAwesomeIcon icon={faSpinner} spin className="w-5 h-5" />
+                    ) : (
+                      <FontAwesomeIcon icon={isLoved ? faHeartSolid : faHeartRegular} className="w-5 h-5" />
+                    )}
+                  </motion.button>
+                </motion.div>
+
+                {/* Category badge */}
+                <motion.div
+                  className="absolute top-4 left-4 z-10"
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.2 }}
+                >
+                  {event.category && (
+                    <span className="inline-block bg-gradient-to-r from-purple-600 to-pink-600 text-white text-xs font-semibold px-3 py-1.5 rounded-full shadow-lg">
+                      {event.category}
+                    </span>
+                  )}
+                </motion.div>
+
+                {/* Event date overlay */}
+                <motion.div
+                  className="absolute bottom-4 left-4 z-10"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.4 }}
+                >
+                  <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm px-4 py-2 rounded-lg shadow-lg">
+                    <div className="flex items-center">
+                      <FontAwesomeIcon icon={faCalendarAlt} className="text-purple-600 dark:text-purple-400 mr-2" />
+                      <span className="font-medium text-gray-900 dark:text-white">
+                        {event.date || event.event_date || "Date TBA"}
+                      </span>
+                    </div>
+                  </div>
+                </motion.div>
+              </div>
+              {/* Action buttons */}
+              <div className="flex flex-col pt-6 space-y-3">
+                <motion.button
+                  onClick={handleProceedToCheckout}
+                  className="w-full flex items-center justify-center px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white rounded-lg transition-all duration-300 font-medium shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+                  disabled={event.available_tickets <= 0}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                >
+                  <FontAwesomeIcon icon={faShoppingCart} className="w-4 h-4 mr-2" />
+                  {event.available_tickets > 0 ? `Proceed to Checkout` : "Sold Out"}
+                </motion.button>
 
                 <motion.button
-                  className={`bg-white/90 dark:bg-gray-800/90 hover:bg-white dark:hover:bg-gray-800 p-3 rounded-full transition-all duration-300 shadow-lg hover:shadow-xl ${isLoved ? "text-red-500" : "text-gray-800 dark:text-gray-200"} ${isBookmarkLoading ? "opacity-80 cursor-wait" : ""}`}
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    handleLoveClick()
-                  }}
+                  onClick={handleLoveClick}
+                  className={`w-full flex items-center justify-center px-4 py-2 border rounded-lg transition-all duration-300 font-medium text-sm ${isLoved
+                    ? "border-red-500 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10"
+                    : "border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
+                    }`}
                   disabled={isBookmarkLoading}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                >
+                  {isBookmarkLoading ? (
+                    <FontAwesomeIcon icon={faSpinner} spin className="w-4 h-4 mr-2" />
+                  ) : (
+                    <FontAwesomeIcon icon={isLoved ? faHeartSolid : faHeartRegular} className="w-4 h-4 mr-2" />
+                  )}
+                  {isLoved ? "Saved to Favorites" : "Save to Favorites"}
+                </motion.button>
+                <motion.div
+                  className="bg-slate-100/90  dark:bg-gray-800/90 hover:bg-white dark:hover:bg-gray-800 text-gray-800 dark:text-gray-200 p-3 rounded-full transition-all duration-300 shadow-lg hover:shadow-xl"
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
                 >
-                  {isBookmarkLoading ? (
-                    <FontAwesomeIcon icon={faSpinner} spin className="w-5 h-5" />
-                  ) : (
-                    <FontAwesomeIcon icon={isLoved ? faHeartSolid : faHeartRegular} className="w-5 h-5" />
-                  )}
-                </motion.button>
-              </motion.div>
-
-              {/* Category badge */}
-              <motion.div
-                className="absolute top-4 left-4 z-10"
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.2 }}
-              >
-                {event.category && (
-                  <span className="inline-block bg-gradient-to-r from-purple-600 to-pink-600 text-white text-xs font-semibold px-3 py-1.5 rounded-full shadow-lg">
-                    {event.category}
-                  </span>
-                )}
-              </motion.div>
-
-              {/* Event date overlay */}
-              <motion.div
-                className="absolute bottom-4 left-4 z-10"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 }}
-              >
-                <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm px-4 py-2 rounded-lg shadow-lg">
-                  <div className="flex items-center">
-                    <FontAwesomeIcon icon={faCalendarAlt} className="text-purple-600 dark:text-purple-400 mr-2" />
-                    <span className="font-medium text-gray-900 dark:text-white">
-                      {event.date || event.event_date || "Date TBA"}
-                    </span>
-                  </div>
-                </div>
-              </motion.div>
+                  <ShareButton event={event} />
+                </motion.div>
+              </div>
             </div>
 
+
+            {/* Right Side  */}
             <div className="p-6">
               <motion.h1
                 className="text-2xl md:text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600 mb-2"
@@ -496,41 +538,11 @@ const EventDetails = () => {
                   </div>
                 )}
 
-                {/* Action buttons */}
-                <div className="flex flex-col space-y-2">
-                  <motion.button
-                    onClick={handleProceedToCheckout}
-                    className="w-full flex items-center justify-center px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white rounded-lg transition-all duration-300 font-medium shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed text-sm"
-                    disabled={event.available_tickets <= 0}
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                  >
-                    <FontAwesomeIcon icon={faShoppingCart} className="w-4 h-4 mr-2" />
-                    {event.available_tickets > 0 ? `Proceed to Checkout` : "Sold Out"}
-                  </motion.button>
 
-                  <motion.button
-                    onClick={handleLoveClick}
-                    className={`w-full flex items-center justify-center px-4 py-2 border rounded-lg transition-all duration-300 font-medium text-sm ${isLoved
-                      ? "border-red-500 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10"
-                      : "border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
-                      }`}
-                    disabled={isBookmarkLoading}
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                  >
-                    {isBookmarkLoading ? (
-                      <FontAwesomeIcon icon={faSpinner} spin className="w-4 h-4 mr-2" />
-                    ) : (
-                      <FontAwesomeIcon icon={isLoved ? faHeartSolid : faHeartRegular} className="w-4 h-4 mr-2" />
-                    )}
-                    {isLoved ? "Saved to Favorites" : "Save to Favorites"}
-                  </motion.button>
-                </div>
               </motion.div>
             </div>
 
-            {/* ... (rest of your existing event details code) ... */}
+
           </div>
         </motion.div>
 
@@ -576,13 +588,7 @@ const EventDetails = () => {
             <h2 className="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600 mb-4">
               Additional Information
             </h2>
-            <motion.button
-              className="bg-white/90 dark:bg-gray-800/90 hover:bg-white dark:hover:bg-gray-800 text-gray-800 dark:text-gray-200 p-3 rounded-full transition-all duration-300 shadow-lg hover:shadow-xl"
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.9 }}
-            >
-              <ShareButton event={event} />
-            </motion.button></div>
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <motion.div
               className="flex items-start"
