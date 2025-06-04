@@ -119,14 +119,14 @@ module.exports = {
           950: "#083344",
         },
         sidebar: {
-          DEFAULT: "var(--sidebar-background, #ffffff)",
-          foreground: "var(--sidebar-foreground, #1f2937)",
-          border: "var(--sidebar-border, #e5e7eb)",
-          primary: "var(--sidebar-primary, #3b82f6)",
-          "primary-foreground": "var(--sidebar-primary-foreground, #ffffff)",
-          accent: "var(--sidebar-accent, #f3f4f6)",
-          "accent-foreground": "var(--sidebar-accent-foreground, #1f2937)",
-          ring: "var(--sidebar-ring, #3b82f6)",
+          DEFAULT: "var(--sidebar-background)",
+          foreground: "var(--sidebar-foreground)",
+          border: "var(--sidebar-border)",
+          primary: "var(--sidebar-primary)",
+          "primary-foreground": "var(--sidebar-primary-foreground)",
+          accent: "var(--sidebar-accent)",
+          "accent-foreground": "var(--sidebar-accent-foreground)",
+          ring: "var(--sidebar-ring)",
         },
       },
       borderRadius: {
@@ -164,6 +164,8 @@ module.exports = {
       animation: {
         fadeIn: "fadeIn 0.3s ease-out",
         slideDown: "slideDown 0.3s ease-out",
+        slideUp: "slideUp 0.3s ease-out",
+        slideRight: "slideRight 0.3s ease-out",
         pulse: "pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
         bounce: "bounce 1s infinite",
         spin: "spin 1s linear infinite",
@@ -178,6 +180,14 @@ module.exports = {
         slideDown: {
           "0%": { maxHeight: "0", opacity: "0" },
           "100%": { maxHeight: "500px", opacity: "1" },
+        },
+        slideUp: {
+          "0%": { transform: "translateY(20px)", opacity: "0" },
+          "100%": { transform: "translateY(0)", opacity: "1" },
+        },
+        slideRight: {
+          "0%": { transform: "translateX(-20px)", opacity: "0" },
+          "100%": { transform: "translateX(0)", opacity: "1" },
         },
         scaleIn: {
           "0%": { transform: "scale(0.95)", opacity: "0" },
@@ -280,12 +290,12 @@ module.exports = {
         ".sidebar-item": {
           transition: "background-color 0.2s ease, color 0.2s ease",
           "&:hover": {
-            backgroundColor: "var(--sidebar-accent, #f3f4f6)",
-            color: "var(--sidebar-accent-foreground, #1f2937)",
+            backgroundColor: "var(--sidebar-accent)",
+            color: "var(--sidebar-accent-foreground)",
           },
           "&.active": {
-            backgroundColor: "var(--sidebar-primary, #3b82f6)",
-            color: "var(--sidebar-primary-foreground, #ffffff)",
+            backgroundColor: "var(--sidebar-primary)",
+            color: "var(--sidebar-primary-foreground)",
           },
         },
       }
@@ -298,6 +308,29 @@ module.exports = {
           "--sidebar-width-collapsed": "80px",
           "--header-height": "64px",
           "--radius": "0.5rem",
+
+          // Light mode CSS variables
+          "--background": "0 0% 100%",
+          "--foreground": "222.2 84% 4.9%",
+          "--card": "0 0% 100%",
+          "--card-foreground": "222.2 84% 4.9%",
+          "--popover": "0 0% 100%",
+          "--popover-foreground": "222.2 84% 4.9%",
+          "--primary": "221.2 83.2% 53.3%",
+          "--primary-foreground": "210 40% 98%",
+          "--secondary": "210 40% 96%",
+          "--secondary-foreground": "222.2 84% 4.9%",
+          "--muted": "210 40% 96%",
+          "--muted-foreground": "215.4 16.3% 46.9%",
+          "--accent": "210 40% 96%",
+          "--accent-foreground": "222.2 84% 4.9%",
+          "--destructive": "0 84.2% 60.2%",
+          "--destructive-foreground": "210 40% 98%",
+          "--border": "214.3 31.8% 91.4%",
+          "--input": "214.3 31.8% 91.4%",
+          "--ring": "221.2 83.2% 53.3%",
+
+          // Sidebar variables
           "--sidebar-background": "#ffffff",
           "--sidebar-foreground": "#1f2937",
           "--sidebar-border": "#e5e7eb",
@@ -308,6 +341,28 @@ module.exports = {
           "--sidebar-ring": "#3b82f6",
         },
         ".dark": {
+          // Dark mode CSS variables
+          "--background": "222.2 84% 4.9%",
+          "--foreground": "210 40% 98%",
+          "--card": "222.2 84% 4.9%",
+          "--card-foreground": "210 40% 98%",
+          "--popover": "222.2 84% 4.9%",
+          "--popover-foreground": "210 40% 98%",
+          "--primary": "217.2 91.2% 59.8%",
+          "--primary-foreground": "222.2 84% 4.9%",
+          "--secondary": "217.2 32.6% 17.5%",
+          "--secondary-foreground": "210 40% 98%",
+          "--muted": "217.2 32.6% 17.5%",
+          "--muted-foreground": "215 20.2% 65.1%",
+          "--accent": "217.2 32.6% 17.5%",
+          "--accent-foreground": "210 40% 98%",
+          "--destructive": "0 62.8% 30.6%",
+          "--destructive-foreground": "210 40% 98%",
+          "--border": "217.2 32.6% 17.5%",
+          "--input": "217.2 32.6% 17.5%",
+          "--ring": "224.3 76.3% 94.1%",
+
+          // Dark sidebar variables
           "--sidebar-background": "#1f2937",
           "--sidebar-foreground": "#f9fafb",
           "--sidebar-border": "#374151",
@@ -316,6 +371,13 @@ module.exports = {
           "--sidebar-accent": "#374151",
           "--sidebar-accent-foreground": "#f9fafb",
           "--sidebar-ring": "#3b82f6",
+        },
+        "*": {
+          borderColor: "hsl(var(--border))",
+        },
+        body: {
+          backgroundColor: "hsl(var(--background))",
+          color: "hsl(var(--foreground))",
         },
       })
     },

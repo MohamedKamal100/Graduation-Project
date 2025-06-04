@@ -1,1 +1,118 @@
-.Home {}
+/* Home Styles */
+.homeContainer {
+  position: relative;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+}
+
+.backgroundDecoration {
+  padding-top: 50px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image: radial-gradient(
+      circle at 20% 30%,
+      rgba(147, 51, 234, 0.1) 0%,
+      transparent 20%
+    ),
+    radial-gradient(
+      circle at 80% 60%,
+      rgba(79, 70, 229, 0.1) 0%,
+      transparent 20%
+    );
+}
+
+/* Feature Cards */
+.featureCard {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  z-index: 1;
+}
+
+.featureCard::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.2),
+    rgba(255, 255, 255, 0)
+  );
+  z-index: -1;
+}
+
+.featureCard:hover {
+  transform: translateY(-10px) scale(1.02);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2),
+    0 10px 10px -5px rgba(0, 0, 0, 0.1);
+}
+
+.featureCardPurple:hover {
+  box-shadow: 0 20px 25px -5px rgba(139, 92, 246, 0.3),
+    0 10px 10px -5px rgba(139, 92, 246, 0.2);
+}
+
+.featureCardPink:hover {
+  box-shadow: 0 20px 25px -5px rgba(236, 72, 153, 0.3),
+    0 10px 10px -5px rgba(236, 72, 153, 0.2);
+}
+
+.featureCardBlue:hover {
+  box-shadow: 0 20px 25px -5px rgba(59, 130, 246, 0.3),
+    0 10px 10px -5px rgba(59, 130, 246, 0.2);
+}
+
+.featureCardAmber:hover {
+  box-shadow: 0 20px 25px -5px rgba(245, 158, 11, 0.3),
+    0 10px 10px -5px rgba(245, 158, 11, 0.2);
+}
+
+/* Section Styles */
+.categoriesSection {
+  position: relative;
+  z-index: 1;
+}
+
+.categoriesSection::before {
+  content: "";
+  position: absolute;
+  top: -50px;
+  left: 0;
+  right: 0;
+  height: 100px;
+  background: linear-gradient(to bottom, transparent, rgba(224, 231, 255, 0.2));
+  z-index: -1;
+}
+
+.hotEventsSection {
+  position: relative;
+  z-index: 1;
+}
+
+/* Dark mode styles */
+.dark .categoriesSection::before {
+  background: linear-gradient(to bottom, transparent, rgba(30, 41, 59, 0.2));
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .featureCard {
+    padding: 1.25rem;
+  }
+
+  .featureCard h3 {
+    font-size: 1.1rem;
+  }
+
+  .featureCard p {
+    font-size: 0.9rem;
+  }
+}

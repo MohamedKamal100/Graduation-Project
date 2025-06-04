@@ -1,0 +1,43 @@
+/* EventsCarousel Styles */
+.carouselGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1rem;
+  transition: all 0.5s ease-in-out;
+}
+
+.eventCard {
+  height: 100%;
+  transition: all 0.3s ease;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+.eventCard:hover {
+  transform: translateY(-5px);
+}
+
+/* Responsive styles */
+@media (max-width: 640px) {
+  .carouselGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (min-width: 641px) and (max-width: 768px) {
+  .carouselGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  .carouselGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 1025px) {
+  .carouselGrid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}

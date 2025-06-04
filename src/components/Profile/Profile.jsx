@@ -308,7 +308,7 @@ const Profile = () => {
                       >
                         <div className="w-12 h-12 rounded-md overflow-hidden mr-3">
                           <img
-                            src={ticket.event.image || "/placeholder.svg"}
+                            src={ticket.event.image_path || "/placeholder.svg"}
                             alt={ticket.event.name}
                             className="w-full h-full object-cover"
                           />
@@ -368,7 +368,7 @@ const Profile = () => {
                       >
                         <div className="w-10 h-10 rounded-md overflow-hidden mr-3">
                           <img
-                            src={event.image || "/placeholder.svg"}
+                            src={event.image_path || "/placeholder.svg"}
                             alt={event.name}
                             className="w-full h-full object-cover"
                           />

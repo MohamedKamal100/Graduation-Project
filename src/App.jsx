@@ -1,46 +1,48 @@
-
-import "./App.css"
-import "./variables.css"
+import "./App.css";
+import "./variables.css";
 // Import component styles
-import "./components/CategoryCarasoul/CategoryCarasoul.css"
-import "./components/EventCard/EventCard.css"
-import "./components/HotEvents/HotEvents.css"
-import "./components/ReviewStars/ReviewStars.css"
+import "./components/CategoryCarasoul/CategoryCarasoul.css";
+import "./components/EventCard/EventCard.css";
+import "./components/HotEvents/HotEvents.css";
+import "./components/ReviewStars/ReviewStars.css";
 
-import { createBrowserRouter, RouterProvider, Navigate } from "react-router-dom"
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
-import Tickets from "./components/Tickets/Tickets"
-import Register from "./components/Register/Register"
-import NotFound from "./components/NotFound/NotFound"
-import Login from "./components/Login/Login"
-import Home from "./components/Home/Home"
-import Landing from "./components/Landing/Landing"
-import Layout from "./components/Layout/Layout"
-import Events from "./components/Events/Events"
-import Favorite from "./components/Favorite/Favorite"
-import Dashboard from "./components/admin/Dashboard"
-import EventsManagement from "./components/admin/EventsManagement"
-import UsersManagement from "./components/admin/UserManagement"
-import EventForm from "./components/admin/EventForm"
-import UserContextProvider from "./context/UserContext"
-import EventsProvider from "./context/EventsContext"
-import ToastProvider from "./context/ToastContext"
-import BookingProvider from "./context/BookingContext"
-import ReviewProvider from "./context/ReviewContext"
-import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute"
-import AdminProtectedRoute from "./components/AdminProtectedRoute/AdminProtectedRoute"
-import EventDetails from "./components/EventDetails/EventDetails"
-import Profile from "./components/Profile/Profile"
-import WishlistProvider from "./context/WishlistContext"
-import CartContextProvider from "./context/CartContext"
-import { ThemeProvider } from "./context/ThemeContext"
-import AdminLayout from "./components/admin/AdminLayout"
-import Checkout from "./components/Checkout/Checkout"
-import CheckoutConfirmation from "./components/Checkout/CheckoutConfirmation"
-import { ApiProvider } from "./context/ApiContext"
-
-
+import {
+  createBrowserRouter,
+  RouterProvider,
+  Navigate,
+} from "react-router-dom";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import Tickets from "./components/Tickets/Tickets";
+import Register from "./components/Register/Register";
+import NotFound from "./components/NotFound/NotFound";
+import Login from "./components/Login/Login";
+import Home from "./components/Home/Home";
+import Landing from "./components/Landing/Landing";
+import Layout from "./components/Layout/Layout";
+import Events from "./components/Events/Events";
+import Favorite from "./components/Favorite/Favorite";
+import Dashboard from "./components/admin/Dashboard";
+import EventsManagement from "./components/admin/EventsManagement";
+import UsersManagement from "./components/admin/UserManagement";
+import EventForm from "./components/admin/EventForm";
+import UserContextProvider from "./context/UserContext";
+import EventsProvider from "./context/EventsContext";
+import ToastProvider from "./context/ToastContext";
+import BookingProvider from "./context/BookingContext";
+import ReviewProvider from "./context/ReviewContext";
+import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
+import AdminProtectedRoute from "./components/AdminProtectedRoute/AdminProtectedRoute";
+import EventDetails from "./components/EventDetails/EventDetails";
+import Profile from "./components/Profile/Profile";
+import WishlistProvider from "./context/WishlistContext";
+import CartContextProvider from "./context/CartContext";
+import { ThemeProvider } from "./context/ThemeContext";
+import AdminLayout from "./components/admin/AdminLayout";
+import Checkout from "./components/Checkout/Checkout";
+import CheckoutConfirmation from "./components/Checkout/CheckoutConfirmation";
+import { ApiProvider } from "./context/ApiContext";
+import TicketsManagement from "./components/admin/TicketsManagment";
 
 // Create React Query client
 const queryClient = new QueryClient({
@@ -52,7 +54,7 @@ const queryClient = new QueryClient({
       retry: 1, // Only retry once on failure
     },
   },
-})
+});
 
 function App() {
   const router = createBrowserRouter([
@@ -125,7 +127,7 @@ function App() {
             </ProtectedRoute>
           ),
         },
-        { path: '', index: true, element: <Landing /> },
+        { path: "", index: true, element: <Landing /> },
         { path: "login", element: <Login /> },
         { path: "register", element: <Register /> },
         { path: "*", element: <NotFound /> },
@@ -144,8 +146,12 @@ function App() {
         { path: "dashboard", element: <Dashboard /> },
         { path: "events", element: <EventsManagement /> },
         { path: "events/create", element: <EventForm isEditing={false} /> },
-        { path: "events/edit/:eventId", element: <EventForm isEditing={true} /> },
+        {
+          path: "events/edit/:eventId",
+          element: <EventForm isEditing={true} />,
+        },
         { path: "users", element: <UsersManagement /> },
+        { path: "tickets", element: <TicketsManagement /> },
       ],
     },
     // Redirect /dashboard to /admin for convenience
@@ -153,7 +159,7 @@ function App() {
       path: "/dashboard",
       element: <Navigate to="/admin" replace />,
     },
-  ])
+  ]);
 
   return (
     <ThemeProvider>
@@ -178,7 +184,7 @@ function App() {
         <ReactQueryDevtools initialIsOpen={false} position="bottom-right" />
       </QueryClientProvider>
     </ThemeProvider>
-  )
+  );
 }
 
-export default App
+export default App;

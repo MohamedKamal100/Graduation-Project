@@ -1,4 +1,3 @@
-"use client"
 
 import { useState, useEffect, useRef } from "react"
 import { motion, AnimatePresence } from "framer-motion"
@@ -400,8 +399,8 @@ export default function EventsCarousel() {
                 key={index}
                 onClick={() => setActiveIndex(index + events.length)} // Set to the middle set
                 className={`h-2 rounded-full transition-all duration-300 ${getOriginalIndex(activeIndex) === index
-                    ? "w-8 bg-gradient-to-r from-purple-500 to-pink-500"
-                    : "w-2 bg-gray-300 dark:bg-gray-600 hover:bg-gray-400 dark:hover:bg-gray-500"
+                  ? "w-8 bg-gradient-to-r from-purple-500 to-pink-500"
+                  : "w-2 bg-gray-300 dark:bg-gray-600 hover:bg-gray-400 dark:hover:bg-gray-500"
                   }`}
                 aria-label={`Go to slide ${index + 1}`}
               />
