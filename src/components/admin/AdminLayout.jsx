@@ -148,10 +148,9 @@ const AdminLayout = () => {
           <div className="flex h-16 items-center justify-between px-4 md:px-6">
             {/* Left side - Navigation links */}
             <div className="flex items-center space-x-6">
-              <h1 className="text-xl font-semibold text-gray-900 dark:text-white hidden md:block">Admin Panel</h1>
               <nav className="flex items-center space-x-4">
                 <Link
-                  to="/"
+                  to="/home"
                   className="flex items-center px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md transition-colors duration-200"
                 >
                   <FontAwesomeIcon icon={faHome} className="mr-2" />
@@ -169,18 +168,10 @@ const AdminLayout = () => {
 
             {/* Right side - User info and controls */}
             <div className="flex items-center space-x-4">
-              <button className="p-2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors duration-200 relative">
-                <FontAwesomeIcon icon={faBell} className="w-5 h-5" />
-                <span className="absolute top-0 right-0 h-4 w-4 bg-red-500 rounded-full text-xs text-white flex items-center justify-center animate-pulse">
-                  3
-                </span>
-              </button>
+
 
               <div className="flex items-center space-x-3">
-                <div className="hidden md:block text-right">
-                  <p className="text-sm font-medium text-gray-900 dark:text-white">{userData?.fname || "Admin"}</p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">{userData?.role || "Administrator"}</p>
-                </div>
+
                 <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white font-medium">
                   <FontAwesomeIcon icon={faUser} className="w-4 h-4" />
                 </div>
