@@ -4,6 +4,10 @@ import { useEffect, useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faArrowRight, faArrowLeft, faCalendarAlt, faMapMarkerAlt } from "@fortawesome/free-solid-svg-icons"
+import summerFestivalImg from '../../assets/summerFestival.png';
+import techConferenceImg from '../../assets/techConference.png';
+import foodWineImg from '../../assets/foodWine.png';
+import artExhibitionImg from '../../assets/artExhibition.png';
 
 export default function Carasoul() {
   const [currentImage, setCurrentImage] = useState(0)
@@ -12,28 +16,28 @@ export default function Carasoul() {
   // Enhanced event data with titles and descriptions
   const events = [
     {
-      image: "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?q=80&w=2070&auto=format&fit=crop",
+      image: summerFestivalImg,
       title: "Summer Music Festival",
       description: "Experience the ultimate music festival with top artists from around the world",
       date: "July 15-17, 2025",
       location: "Central Park, New York",
     },
     {
-      image: "https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?q=80&w=2070&auto=format&fit=crop",
+      image: techConferenceImg,
       title: "Tech Conference 2025",
       description: "Join industry leaders and innovators at the biggest tech event of the year",
       date: "August 10-12, 2025",
       location: "Convention Center, San Francisco",
     },
     {
-      image: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?q=80&w=2070&auto=format&fit=crop",
+      image: foodWineImg,
       title: "Food & Wine Festival",
       description: "Taste exquisite cuisine and fine wines from renowned chefs and wineries",
       date: "September 5-7, 2025",
       location: "Riverfront Plaza, Chicago",
     },
     {
-      image: "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?q=80&w=2074&auto=format&fit=crop",
+      image: artExhibitionImg,
       title: "International Art Exhibition",
       description: "Discover breathtaking artworks from talented artists across the globe",
       date: "October 20-25, 2025",

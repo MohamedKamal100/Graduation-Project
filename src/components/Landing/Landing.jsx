@@ -23,6 +23,10 @@ import { useTheme } from "../../context/ThemeContext"
 import kamal from "../../assets/kamal.jpg"
 import nayef from "../../assets/nayef.jpg"
 import atef from "../../assets/atef.png"
+import summerFestivalImg from '../../assets/summerFestival.png';
+import techConferenceImg from '../../assets/techConference.png';
+import foodWineImg from '../../assets/foodWine.png';
+import artExhibitionImg from '../../assets/artExhibition.png';
 
 const LandingPage = () => {
   const [currentImage, setCurrentImage] = useState(0)
@@ -48,10 +52,10 @@ const LandingPage = () => {
 
   // Array of event images
   const images = [
-    "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?q=80&w=2070&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?q=80&w=2070&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1540575467063-178a50c2df87?q=80&w=2070&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?q=80&w=2074&auto=format&fit=crop",
+    summerFestivalImg,
+    techConferenceImg,
+    foodWineImg,
+    artExhibitionImg,
   ]
 
   // Animated image slider
@@ -519,7 +523,7 @@ const LandingPage = () => {
                 date: "Jun 15-18, 2025",
                 location: "Central Park, New York",
                 image:
-                  "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80",
+                  summerFestivalImg,
                 category: "Music",
               },
               {
@@ -527,7 +531,7 @@ const LandingPage = () => {
                 date: "Jul 10-12, 2025",
                 location: "Convention Center, San Francisco",
                 image:
-                  "https://images.unsplash.com/photo-1540575467063-178a50c2df87?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80",
+                  techConferenceImg,
                 category: "Technology",
               },
               {
@@ -535,7 +539,7 @@ const LandingPage = () => {
                 date: "Aug 5-7, 2025",
                 location: "Waterfront Park, Chicago",
                 image:
-                  "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80",
+                  foodWineImg,
                 category: "Food",
               },
             ].map((event, index) => (
@@ -654,7 +658,7 @@ const LandingPage = () => {
                 <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-blue-500 rounded-[3rem] transform rotate-6"></div>
                 <div className="absolute inset-0 bg-white dark:bg-gray-900 rounded-[2.5rem] overflow-hidden border-4 border-gray-200">
                   <img
-                    src="https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?q=80&w=2070&auto=format&fit=crop"
+                    src={summerFestivalImg}
                     alt="EventVibe App"
                     className="w-full h-full object-cover"
                   />
